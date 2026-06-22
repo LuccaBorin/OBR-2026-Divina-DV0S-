@@ -17,9 +17,9 @@
 #include <Wire.h>
 #include <Adafruit_TCS34725.h>
 
-#define R 26
-#define G 25
-#define B 33
+#define R 17
+#define G 16
+#define B 18
 
 float Red;
 float Green;
