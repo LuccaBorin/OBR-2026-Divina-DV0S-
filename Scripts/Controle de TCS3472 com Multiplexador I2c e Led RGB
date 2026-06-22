@@ -11,7 +11,6 @@
  *  -Resistores 220 Omhs
  *  - Vespa RoboCore ESP-32
  *  - Multiplexador TCA9548A (endereço 0x70)
- *
  */
 
 #include <Wire.h>
