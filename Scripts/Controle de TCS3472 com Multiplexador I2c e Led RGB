@@ -1,1 +1,61 @@
+/*
+ * Nome do projeto: Controle de TCS3472 com Multiplexador I2c e Led RGB
+ * Autor: Lucca Pupo Borin
+ * Data: 21/06/2026
+ * Versão: 1.0
+ * Descrição: Código básico para selecionar canais do TCA9548A
+ *            e ler sensores de cor TCS3472 ligados a ele, acendendo um Led RGB
+ *
+ * Hardware utilizado
+ *  -Led RGB
+ *  -Resistores 220 Omhs
+ *  - Vespa RoboCore ESP-32
+ *  - Multiplexador TCA9548A (endereço 0x70)
+ *
+ */
 
+#include <Wire.h>
+#include <Adafruit_TCS34725.h>
+
+#define R 26
+#define G 25
+#define B 33
+
+float Red;
+float Green;
+float Blue;
+float Color;
+
+Adafruit_TCS34725 sensorCor = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_16X);
+
+void Multiplex(uint8_t canal) {  //Seleciona o canak do multiplex i2c
+  Wire.beginTransmission(0x70);
+  Wire.write(1 << canal);
+  Wire.endTransmission();
+}
+
+void setup() {
+  Wire.begin();
+  Multiplex(1);
+  sensorCor.begin();
+  pinMode(R, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(B, OUTPUT);
+  Serial.begin(115200);
+  Serial.println("--------TESTE DOS SENSORES DE COR--------");
+}
+
+void loop() {
+  sensorCor.getRGB(&Red, &Green, &Blue);
+  analogWrite(R, (int)Red);
+  analogWrite(G, (int)Green);
+  analogWrite(B, (int)Blue);
+  Serial.println("Red | Green | Blue");
+  Serial.print(Red);
+  Serial.print("\t");
+  Serial.print(Green);
+  Serial.print("\t");
+  Serial.println(Blue);
+  delay(200);
+}
+ 
