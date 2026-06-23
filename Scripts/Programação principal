@@ -1,0 +1,97 @@
+// ======================================================
+// BIBLIOTECAS
+// ======================================================
+#include <RoboCore_Vespa.h>
+#include <Wire.h>
+// ======================================================
+// OBJETOS
+// ======================================================
+VespaMotors motors;
+// ======================================================
+// DEFINES
+// ======================================================
+
+#define LpE 17  //Linha ponta esquerda
+#define LcE 5   //Linha centro esquerda
+#define Lc 18   //Linha centro
+#define LcD 36  //Linha centro direita
+#define LpD 19  //Linha ponta direita
+
+// ======================================================
+// VARIAVEIS
+// ======================================================
+int spd = 45;  //vai de 0 a 100
+int preto = 0;
+int branco = 0;
+bool LeituraLpE = 0, LeituraLcE = 0, LeituraLc = 0, LeituraLcD = 0, LeituraLpD = 0;  //Variaveis sensor linha
+// ======================================================
+// FUNÇÕES
+// ======================================================
+void selectChannel(uint8_t channel);
+void Mover(char dir, int spd, int time);
+void Leituras();
+void Linhas();
+void Calibragem();
+// ======================================================
+// SETUP
+// ======================================================
+void setup() {
+  Serial.begin(115200);
+  // ======== PINOUT ========
+  pinMode(LpE, INPUT);
+  pinMode(LcE, INPUT);
+  pinMode(Lc, INPUT);
+  pinMode(LcD, INPUT);
+  pinMode(LpD, INPUT);
+  // ======== BEGINS ========
+  Wire.begin();
+}
+
+void loop() {
+}
+// ======================================================
+// FUNÇÕES
+// ======================================================
+// ======== MULTIPLEXADOR I2C ========
+void selectChannel(uint8_t channel) {
+  Wire.beginTransmission(0x70);
+  Wire.write(1 << channel);
+  Wire.endTransmission();
+}
+// ======== MOVER ========
+void Mover(char dir, int spd, int time) {
+  if (spd < 0) spd = 0;
+  if (spd > 100) spd = 100;
+
+  switch (dir) {
+    case 'f':
+      motors.forward(spd);
+      break;
+    case 't':
+      motors.backward(spd);
+      break;
+    case 'd':
+      motors.setSpeedLeft(spd);
+      motors.setSpeedRight(-spd);
+      break;
+    case 'e':
+      motors.setSpeedLeft(-spd);
+      motors.setSpeedRight(spd);
+      break;
+    case 'p':
+    default:
+      motors.stop();
+      break;
+  }
+  delay(time);
+  motors.stop();
+}
+// ======== LEITURAS ========
+void Leituras() {
+  // ======== LINHA ========
+  LeituraLpE = digitalRead(LpE);
+  LeituraLcE = digitalRead(LcE);
+  LeituraLc = digitalRead(Lc);
+  LeituraLcD = digitalRead(LcD);
+  LeituraLpD = digitalRead(LpD);
+}
