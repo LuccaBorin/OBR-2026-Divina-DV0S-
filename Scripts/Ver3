@@ -1,0 +1,162 @@
+// ======================================================
+// BIBLIOTECAS
+// ======================================================
+#include <RoboCore_Vespa.h>
+#include <Wire.h>
+// ======================================================
+// OBJETOS
+// ======================================================
+VespaMotors motors;
+Adafruit_MPU6050 SensorGiro;
+// ======================================================
+// DEFINES
+// ======================================================
+
+#define LpE 17  //Linha ponta esquerda
+#define LiE 16  //Linha intermediario esquerda
+#define LmE 18  //Linha meio esquerda
+#define LcE 5  //Linha centro esquerda
+#define LcD 36   //Linha centro direita
+#define LmD 39  //Linha meio direita
+#define LiD 23  //Linha intermediario direita
+#define LpD 19  //Linha ponta direita
+
+// ======================================================
+// VARIAVEIS
+// ======================================================
+int spd = 70;  //vai de 0 a 100
+unsigned long ultimoTempo = 0;
+int preto = 0;
+int branco = 0;
+
+bool LeituraLpE = 0, LeituraLiE = 0;
+bool LeituraLmE = 0, LeituraLmD = 0;
+bool LeituraLcE = 0, LeituraLcD = 0;
+bool LeituraLiD = 0, LeituraLpD = 0;
+
+float x, y, z;
+unsigned long tempoAnterior = 0;
+// ======================================================
+// FUNÇÕES
+// ======================================================
+void selectChannel(uint8_t channel);
+void Mover(char dir, int spd, int time);
+void Leituras();
+void Linhas();
+void Calibragem();
+// ======================================================
+// SETUP
+// ======================================================
+void setup() {
+
+  Serial.begin(115200);
+
+  // ======== PINOUT ========
+
+  pinMode(LpE, INPUT);
+  pinMode(LiE, INPUT);
+  pinMode(LmE, INPUT);
+  pinMode(LcE, INPUT);
+  pinMode(LcD, INPUT);
+  pinMode(LmD, INPUT);
+  pinMode(LiD, INPUT);
+  pinMode(LpD, INPUT);
+
+  // ======== BEGINS ========
+  Wire.begin();
+  SensorGiro.begin();
+  SensorGiro.setGyroRange(MPU6050_RANGE_500_DEG);
+  SensorGiro.setAccelerometerRange(MPU6050_RANGE_8_G);
+}
+
+void loop() {
+  Serial.println(digitalRead(17));
+  delay(100);
+}
+// ======================================================
+// FUNÇÕES
+// ======================================================
+// ======== MULTIPLEXADOR I2C ========
+void selectChannel(uint8_t channel) {
+  Wire.beginTransmission(0x70);
+  Wire.write(1 << channel);
+  Wire.endTransmission();
+}
+// ======== MULTIPLEXADOR I2C ========
+// ======== MOVER ========
+void Mover(char dir, int spd, int time) {
+  if (spd < 0) spd = 0;
+  if (spd > 100) spd = 100;
+
+  switch (dir) {
+    case 'f':
+      motors.forward(spd);
+      break;
+    case 't':
+      motors.backward(spd);
+      break;
+    case 'd':
+      motors.setSpeedLeft(spd);
+      motors.setSpeedRight(-spd);
+      break;
+    case 'e':
+      motors.setSpeedLeft(-spd);
+      motors.setSpeedRight(spd);
+      break;
+    case 'p':
+    default:
+      motors.stop();
+      break;
+  }
+  delay(time);
+  motors.stop();
+}
+// ======== MOVER ========
+
+// ======== LEITURAS ========
+void Leituras() {
+  // ======== LINHA ========
+LeituraLpE = digitalRead(LpE);
+LeituraLiE = digitalRead(LiE);
+LeituraLmE = digitalRead(LmE);
+LeituraLcE = digitalRead(LcE);
+LeituraLcD = digitalRead(LcD);
+LeituraLmD = digitalRead(LmD);
+LeituraLiD = digitalRead(LiD);
+LeituraLpD = digitalRead(LpD);
+
+// ======== MONITOR SERIAL ========
+Serial.println("=================================================");
+Serial.println("LpE LiE LmE LcE | LcD LmD LiD LpD");
+Serial.println("-------------------------------------------------");
+
+Serial.printf(" %d   %d   %d   %d  |  %d   %d   %d   %d\n",
+              LeituraLpE,
+              LeituraLiE,
+              LeituraLmE,
+              LeituraLcE,
+              LeituraLcD,
+              LeituraLmD,
+              LeituraLiD,
+              LeituraLpD);
+
+Serial.println("=================================================\n");
+
+  // ======== GIROSCÓPIO ========
+
+  selectChannel(1);
+  sensors_event_t a, g, temp;
+  SensorGiro.getEvent(&a, &g, &temp);
+
+  // Calcula delta de tempo desde a última leitura
+  unsigned long agora = millis();
+  float dt = (agora - tempoAnterior) / 1000.0;  // tempo em segundos
+  tempoAnterior = agora;
+
+  // Integra velocidade angular para obter ângulo em graus
+  z += g.gyro.z * 57.2958 * dt;
+  x += g.gyro.x * 57.2958 * dt;
+  y += g.gyro.y * 57.2958 * dt;
+}
+
+// ======== LEITURAS ========
