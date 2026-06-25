@@ -1,1 +1,48 @@
+/*
+ * Nome do projeto: Controle de TCRT5000 5 canais
+ * Autor: Lucca Pupo Borin
+ * Data: 21/06/2026
+ * Versão: 1.0
+ * Descrição: Código básico para testar um sensor segue linha TCRT5000 com 5 canais, e fazer sua calibragem
+ *
+ * Hardware utilizado
+ *  - Vespa RoboCore ESP-32
+ *  - Follow line sensor 5 channel
+ */
 
+//DEFINES--
+#define LpE 
+#define LcE 
+#define Lm 
+#define LcD 
+#define LpD 
+
+//VARIAVEIS--
+int valLpE,valLcE,valLm,valLcD,valLpD;
+int med1,med2,med3;
+
+
+//FUNÇÕES--
+void Leituras();
+void SegueLinha();
+void Calibragem();
+
+void setup() {
+Serial.begin(115200);
+pinMode(LpE,INPUT);
+pinMode(LcE,INPUT);
+pinMode(Lm,INPUT);
+pinMode(LcD,INPUT);
+pinMode(LpD,INPUT);
+}
+
+void loop() {
+Leituras();
+SegueLinha();
+Leituras();
+}
+
+//FUNÇÕES--
+void Leituras(){
+  Serial.Println(analogRead(LpE));
+}
