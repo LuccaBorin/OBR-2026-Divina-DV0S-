@@ -19,7 +19,8 @@ VespaMotors motors;
 // ======================================================
 // VARIAVEIS
 // ======================================================
-int spd = 50;  //vai de 0 a 100
+int spd = 60;  //vai de 0 a 100
+int spdCurva = 65;  //vai de 0 a 100
 bool valLpE, valLcE, valLm, valLcD, valLpD;
 // ======================================================
 // FUNÇÕES
@@ -101,7 +102,7 @@ void SegueLinha() {
     Mover('f', spd, 600);
     Mover('p', spd, 1000);
     while (!valLm) {
-      Mover('e', spd, 3);
+      Mover('e', spdCurva, 1);
     }
     Mover('p', spd, 1000);
     Mover('e', spd, 100);
@@ -110,7 +111,7 @@ void SegueLinha() {
     Mover('f', spd, 600);
     Mover('p', spd, 1000);
     while (!valLm) {
-      Mover('d', spd, 3);
+      Mover('d', spdCurva, 1);
     }
     Mover('p', spd, 1000);
     Mover('d', spd, 100);
