@@ -98,19 +98,21 @@ void Leituras() {
 void SegueLinha() {
   if (valLpE) {//-------- CURVA DE 90 GRAUS DA ESQUERDA --------
     Mover('p', spd, 1000);
-    Mover('f', spd, 700);
+    Mover('f', spd, 600);
     Mover('p', spd, 1000);
     while (!valLm) {
-      Mover('e', spd, 5);
+      Mover('e', spd, 3);
     }
+    Mover('p', spd, 1000);
     Mover('e', spd, 100);
   } else if (valLpD) {//-------- CURVA DE 90 GRAUS DA DIREITA --------
     Mover('p', spd, 1000);
-    Mover('f', spd, 700);
+    Mover('f', spd, 600);
     Mover('p', spd, 1000);
     while (!valLm) {
-      Mover('d', spd, 5);
+      Mover('d', spd, 3);
     }
+    Mover('p', spd, 1000);
     Mover('d', spd, 100);
   } else if (valLcE) {//-------- CURVA LEVE DA ESQUERDA --------
     Mover('e', spd, 100);
