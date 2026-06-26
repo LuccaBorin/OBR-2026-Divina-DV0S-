@@ -1,0 +1,46 @@
+#include "RoboCore_Vespa.h"
+
+VespaMotors motors;
+
+const int VELOCIDADE = 80;      // Velocidade (0 a 100)
+const int TEMPO = 2000;         // Tempo de movimento (ms)
+const int PAUSA = 1000;         // Tempo parado entre movimentos (ms)
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Teste de movimentos do robô");
+}
+
+void loop() {
+
+  // Frente
+  Serial.println("Frente");
+  motors.forward(VELOCIDADE);
+  delay(TEMPO);
+  motors.stop();
+  delay(PAUSA);
+
+  // Trás
+  Serial.println("Trás");
+  motors.backward(VELOCIDADE);
+  delay(TEMPO);
+  motors.stop();
+  delay(PAUSA);
+
+  // Esquerda (giro no próprio eixo)
+  Serial.println("Esquerda");
+  motors.setSpeedLeft(-VELOCIDADE);
+  motors.setSpeedRight(VELOCIDADE);
+  delay(TEMPO);
+  motors.stop();
+  delay(PAUSA);
+
+  // Direita (giro no próprio eixo)
+  Serial.println("Direita");
+  motors.setSpeedLeft(VELOCIDADE);
+  motors.setSpeedRight(-VELOCIDADE);
+  delay(TEMPO);
+  motors.stop();
+  delay(PAUSA);
+
+}
