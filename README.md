@@ -2,3 +2,4 @@ Esse é o local onde estou registrando todos os passos para a OBR Robocup Brasil
 Obs: Todos os arquivos feitos exclusivamente pelo aluno Lucca P. Borin.
 Tarefas:
 Testar com velocidade normal de 60 e para curva 65
+Colocar tubinho lego no eixo da frente do motor e pendelo com enforca gato bem preso para entortar para dentro.
