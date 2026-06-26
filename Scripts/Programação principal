@@ -2,7 +2,6 @@
 // BIBLIOTECAS
 // ======================================================
 #include <RoboCore_Vespa.h>
-#include <Wire.h>
 // ======================================================
 // OBJETOS
 // ======================================================
@@ -11,53 +10,41 @@ VespaMotors motors;
 // DEFINES
 // ======================================================
 
-#define LpE 17  //Linha ponta esquerda
-#define LcE 5   //Linha centro esquerda
-#define Lc 18   //Linha centro
-#define LcD 36  //Linha centro direita
-#define LpD 19  //Linha ponta direita
+#define LpE 17  //Linha ponta esquerda L2
+#define LcE 16  //Linha centro esquerda L1
+#define Lm 18   //Linha centro M
+#define LcD 5   //Linha centro direita R1
+#define LpD 23  //Linha ponta direita R2
 
 // ======================================================
 // VARIAVEIS
 // ======================================================
-int spd = 45;  //vai de 0 a 100
-int preto = 0;
-int branco = 0;
-bool LeituraLpE = 0, LeituraLcE = 0, LeituraLc = 0, LeituraLcD = 0, LeituraLpD = 0;  //Variaveis sensor linha
+int spd = 50;  //vai de 0 a 100
+bool valLpE, valLcE, valLm, valLcD, valLpD;
 // ======================================================
 // FUNÇÕES
 // ======================================================
-void selectChannel(uint8_t channel);
-void Mover(char dir, int spd, int time);
 void Leituras();
-void Linhas();
-void Calibragem();
+void SegueLinha();
+void Mover(char dir, int spd, int time);
 // ======================================================
 // SETUP
 // ======================================================
 void setup() {
   Serial.begin(115200);
-  // ======== PINOUT ========
-  pinMode(LpE, INPUT);
-  pinMode(LcE, INPUT);
-  pinMode(Lc, INPUT);
-  pinMode(LcD, INPUT);
-  pinMode(LpD, INPUT);
-  // ======== BEGINS ========
-  Wire.begin();
+}
+// ======================================================
+// LOOP
+// ======================================================
+void loop() {
+  Leituras();
+  SegueLinha();
+  Leituras();
 }
 
-void loop() {
-}
 // ======================================================
 // FUNÇÕES
 // ======================================================
-// ======== MULTIPLEXADOR I2C ========
-void selectChannel(uint8_t channel) {
-  Wire.beginTransmission(0x70);
-  Wire.write(1 << channel);
-  Wire.endTransmission();
-}
 // ======== MOVER ========
 void Mover(char dir, int spd, int time) {
   if (spd < 0) spd = 0;
@@ -85,13 +72,53 @@ void Mover(char dir, int spd, int time) {
   }
   delay(time);
   motors.stop();
+  Leituras();
 }
 // ======== LEITURAS ========
 void Leituras() {
   // ======== LINHA ========
-  LeituraLpE = digitalRead(LpE);
-  LeituraLcE = digitalRead(LcE);
-  LeituraLc = digitalRead(Lc);
-  LeituraLcD = digitalRead(LcD);
-  LeituraLpD = digitalRead(LpD);
+  valLpE = digitalRead(LpE);
+  valLcE = digitalRead(LcE);
+  valLm = digitalRead(Lm);
+  valLcD = digitalRead(LcD);
+  valLpD = digitalRead(LpD);
+ // ======== MONITOR SERIAL ========
+  Serial.print("LpE: ");
+  Serial.print(valLpE);
+  Serial.print(" | LcE: ");
+  Serial.print(valLcE);
+  Serial.print(" | Lm: ");
+  Serial.print(valLm);
+  Serial.print(" | LcD: ");
+  Serial.print(valLcD);
+  Serial.print(" | LpD: ");
+  Serial.println(valLpD);
+}
+// ======== SEGUE LINHA ========
+void SegueLinha() {
+  if (valLpE) {//-------- CURVA DE 90 GRAUS DA ESQUERDA --------
+    Mover('p', spd, 1000);
+    Mover('f', spd, 700);
+    Mover('p', spd, 1000);
+    while (!valLm) {
+      Mover('e', spd, 5);
+    }
+    Mover('e', spd, 100);
+  } else if (valLpD) {//-------- CURVA DE 90 GRAUS DA DIREITA --------
+    Mover('p', spd, 1000);
+    Mover('f', spd, 700);
+    Mover('p', spd, 1000);
+    while (!valLm) {
+      Mover('d', spd, 5);
+    }
+    Mover('d', spd, 100);
+  } else if (valLcE) {//-------- CURVA LEVE DA ESQUERDA --------
+    Mover('e', spd, 100);
+    Mover('f', spd, 50);
+  } else if (valLcD) {//-------- CURVA LEVE DA DIREITA --------
+    Mover('d', spd, 100);
+    Mover('f', spd, 50);
+  } else {//-------- DEFAULT --------
+    Mover('f', spd, 10);
+  }
 }
