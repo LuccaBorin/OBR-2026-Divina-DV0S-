@@ -86,11 +86,12 @@ enum PerfilVelocidade {
 // ENUM: Desafio
 // ======================================================
 enum Desafio {
-  NOVENTA_GRAUS_ESQUERDA,  // Curva de 90 graus para esquerda
-  NOVENTA_GRAUS_DIREITA,   // Curva de 90 graus para direita
-  CURVA_LEVE_ESQUERDA,     // Curva leve/correção para esquerda
-  CURVA_LEVE_DIREITA,      // Curva leve/correção para direita
-  NENHUM                   // Andar para frente (não detectou nada)
+  INTESECAO_SEM_MARCACAO     // Interseções sem marcaçoes
+    NOVENTA_GRAUS_ESQUERDA,  // Curva de 90 graus para esquerda
+  NOVENTA_GRAUS_DIREITA,     // Curva de 90 graus para direita
+  CURVA_LEVE_ESQUERDA,       // Curva leve/correção para esquerda
+  CURVA_LEVE_DIREITA,        // Curva leve/correção para direita
+  NENHUM                     // Andar para frente (não detectou nada)
 };
 // ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
@@ -264,7 +265,9 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
-    if (isSensorPE && !isSensorPD) {
+    if (isSensorPE && isSensorPD) {
+      // -------- INTERSECÇÃO DUAS LINHAS SEM COR --------
+    } else if (isSensorPE && !isSensorPD) {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
 
@@ -313,6 +316,12 @@ void seguirLinha() {
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       mover(PARAR, VEL_BASE, 500);
+      mover(FRENTE, VEL_CURVA, 200);
+      detectarDesafio();
+      if (desafioAtual == INTERSECAO_SEM_MARCACAO) {
+        mover(FRENTE, VEL_CURVA, 275);
+      }
+      mover(PARAR, VEL_BASE, 500);
       mover(FRENTE, VEL_CURVA, 475);
       mover(PARAR, VEL_BASE, 500);
 
@@ -327,6 +336,12 @@ void seguirLinha() {
 
     case NOVENTA_GRAUS_DIREITA:
       // -------- CURVA DE 90° PARA A DIREITA --------
+      mover(PARAR, VEL_BASE, 500);
+      mover(FRENTE, VEL_CURVA, 200);
+      detectarDesafio();
+      if (desafioAtual == INTERSECAO_SEM_MARCACAO) {
+        mover(FRENTE, VEL_CURVA, 275);
+      }
       mover(PARAR, VEL_BASE, 500);
       mover(FRENTE, VEL_CURVA, 475);
       mover(PARAR, VEL_BASE, 500);
