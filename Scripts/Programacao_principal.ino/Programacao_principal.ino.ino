@@ -263,26 +263,27 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
+  if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
+    if (isSensorPE && !isSensorPD) {
+      // -------- CURVA DE 90° PARA A ESQUERDA --------
+      desafioAtual = NOVENTA_GRAUS_ESQUERDA;
 
-  if (isSensorPE) {
-    // -------- CURVA DE 90° PARA A ESQUERDA --------
-    desafioAtual = NOVENTA_GRAUS_ESQUERDA;
+    } else if (isSensorPD && !isSensorPE) {
+      // -------- CURVA DE 90° PARA A DIREITA --------
+      desafioAtual = NOVENTA_GRAUS_DIREITA;
 
-  } else if (isSensorPD) {
-    // -------- CURVA DE 90° PARA A DIREITA --------
-    desafioAtual = NOVENTA_GRAUS_DIREITA;
+    } else if (isSensorCE) {
+      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
+      desafioAtual = CURVA_LEVE_ESQUERDA;
 
-  } else if (isSensorCE) {
-    // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
-    desafioAtual = CURVA_LEVE_ESQUERDA;
+    } else if (isSensorCD) {
+      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
+      desafioAtual = CURVA_LEVE_DIREITA;
 
-  } else if (isSensorCD) {
-    // -------- CORREÇÃO SUAVE PARA A DIREITA --------
-    desafioAtual = CURVA_LEVE_DIREITA;
-
-  } else {
-    // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-    desafioAtual = NENHUM;
+    } else {
+      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
+      desafioAtual = NENHUM;
+    }
   }
 }
 
@@ -311,30 +312,30 @@ void seguirLinha() {
 
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 500);
       mover(FRENTE, VEL_CURVA, 475);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 500);
 
       while (!isSensorCM) {
         mover(ESQUERDA, VEL_CURVA, 3);
       }
 
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 500);
       mover(ESQUERDA, VEL_CURVA, 125);
       break;
 
 
     case NOVENTA_GRAUS_DIREITA:
       // -------- CURVA DE 90° PARA A DIREITA --------
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 500);
       mover(FRENTE, VEL_CURVA, 475);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 500);
 
       while (!isSensorCM) {
         mover(DIREITA, VEL_CURVA, 3);
       }
 
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 500);
       mover(DIREITA, VEL_CURVA, 125);
       break;
 
