@@ -3,3 +3,4 @@ Obs: Todos os arquivos feitos exclusivamente pelo aluno Lucca P. Borin.
 Tarefas:
 Testar com velocidade normal de 60 e para curva 65
 Colocar tubinho lego no eixo da frente do motor e pendelo com enforca gato bem preso para entortar para dentro.
+Diminuir  andar para frente do 90 já que coloquei para interseção
