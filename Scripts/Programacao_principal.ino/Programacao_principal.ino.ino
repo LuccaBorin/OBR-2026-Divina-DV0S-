@@ -312,7 +312,7 @@ void seguirLinha() {
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_CURVA, 500);
+      mover(FRENTE, VEL_CURVA, 525);
       mover(PARAR, VEL_BASE, 1000);
 
       while (!isSensorCM) {
@@ -327,7 +327,7 @@ void seguirLinha() {
     case NOVENTA_GRAUS_DIREITA:
       // -------- CURVA DE 90° PARA A DIREITA --------
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_CURVA, 500);
+      mover(FRENTE, VEL_CURVA, 525);
       mover(PARAR, VEL_BASE, 1000);
 
       while (!isSensorCM) {
