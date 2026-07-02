@@ -316,10 +316,9 @@ void seguirLinha() {
 
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
-      mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_CURVA, 175);
-      detectarDesafio();
-      if (desafioAtual == INTERSECAO_SEM_MARCACAO) {
+      mover(PARAR, VEL_BASE, 2000);
+      mover(FRENTE, VEL_CURVA, 200);
+      if (isSensorPE && isSensorPD) {
         mover(PARAR, VEL_BASE, 2000);
         mover(FRENTE, VEL_CURVA, 275);
       }
@@ -340,8 +339,7 @@ void seguirLinha() {
       // -------- CURVA DE 90° PARA A DIREITA --------
       mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_CURVA, 175);
-      detectarDesafio();
-      if (desafioAtual == INTERSECAO_SEM_MARCACAO) {
+      if (isSensorPD && isSensorPE) {
         mover(PARAR, VEL_BASE, 2000);
         mover(FRENTE, VEL_CURVA, 275);
       }
