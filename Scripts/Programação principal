@@ -1,127 +1,341 @@
+/*
+ * ======================================================
+ * Projeto  : Robô Seguidor de Linha
+ * Autor    : ...
+ * Data     : ...
+ * ======================================================
+ * Hardware:
+ *   Plataforma  : RoboCore Vespa (ESP32)
+ *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
+ *   Motor driver: L298N (via biblioteca VespaMotors)
+ *
+ * Convenções de nomenclatura utilizadas:
+ *   #define / pinos  → SNAKE_CASE_MAIUSCULO
+ *   Tipos (enum)     → PascalCase
+ *   Valores de enum  → SNAKE_MAIUSCULO  (sem prefixo de categoria)
+ *   Funções          → camelCase  (padrão Arduino)
+ *   Variáveis globais → camelCase
+ *   Booleanos        → prefixo is/tem para leitura natural
+ *   Variáveis locais → camelCase simples
+ *
+ * Lógica geral:
+ *   Os sensores retornam HIGH quando detectam a linha (superfície
+ *   escura) e LOW quando estão sobre o fundo claro. O robô ajusta
+ *   sua direção com base em quais sensores estão ativos.
+ *
+ *   Sensores de ponta (PE / PD): indicam que o robô saiu muito
+ *   da linha → executa curva de 90°.
+ *   Sensores de centro (CE / CD): indicam desvio leve → correção
+ *   suave de trajetória.
+ *   Sensor central (CM): referência de alinhamento nas curvas de 90°.
+ * ======================================================
+ */
+
 // ======================================================
 // BIBLIOTECAS
 // ======================================================
 #include <RoboCore_Vespa.h>
+
 // ======================================================
 // OBJETOS
 // ======================================================
 VespaMotors motors;
-// ======================================================
-// DEFINES
-// ======================================================
-
-#define LpE 17  //Linha ponta esquerda L2
-#define LcE 16  //Linha centro esquerda L1
-#define Lm 18   //Linha centro M
-#define LcD 5   //Linha centro direita R1
-#define LpD 23  //Linha ponta direita R2
 
 // ======================================================
-// VARIAVEIS
+// PINOS — SNAKE_CASE totalmente maiúsculo
+//
+// Mapa dos sensores (visão de cima do robô):
+//
+//   Esquerda ←————————————→ Direita
+//   [PIN_SENSOR_PE] [PIN_SENSOR_CE] [PIN_SENSOR_CM] [PIN_SENSOR_CD] [PIN_SENSOR_PD]
+//        L2               L1               M               R1              R2
+//
+// PE = Ponta Esquerda   CE = Centro Esquerda   CM = Centro Meio
+// CD = Centro Direita   PD = Ponta Direita
 // ======================================================
-int spd = 50;  //vai de 0 a 100
-int spdCurva = 55;  //vai de 0 a 100
-bool valLpE, valLcE, valLm, valLcD, valLpD;
+#define PIN_SENSOR_PE 17  // Ponta esquerda  (L2) -- TX2
+#define PIN_SENSOR_CE 16  // Centro esquerda (L1) -- RX2
+#define PIN_SENSOR_CM 18  // Centro meio     (M)  -- SCK
+#define PIN_SENSOR_CD 5   // Centro direita  (R1) -- SS
+#define PIN_SENSOR_PD 23  // Ponta direita   (R2) -- MOSI
+
 // ======================================================
-// FUNÇÕES
+// ENUM: Direcao
 // ======================================================
-void Leituras();
-void SegueLinha();
-void Mover(char dir, int spd, int time);
+enum Direcao {
+  FRENTE,    // Ambos os motores para frente
+  TRAS,      // Ambos os motores para trás
+  DIREITA,   // Giro no próprio eixo para a direita
+  ESQUERDA,  // Giro no próprio eixo para a esquerda
+  PARAR      // Para os motores
+};
+
+// ======================================================
+// ENUM: PerfilVelocidade
+// Faixa válida: 0 a 100.
+// Abaixo de ~30 o motor pode não vencer o atrito estático.
+// ======================================================
+enum PerfilVelocidade {
+  VEL_BASE = 65,    // Velocidade padrão em linha reta
+  VEL_CURVA = 75,   // Ajustada para manter a linha na curva
+  VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
+  VEL_DESCIDA = 55  // Reduzida para não perder o controle
+};
+
+// ======================================================
+// ENUM: Desafio
+// ======================================================
+enum Desafio {
+  NOVENTA_GRAUS_ESQUERDA,  // Curva de 90 graus para esquerda
+  NOVENTA_GRAUS_DIREITA,   // Curva de 90 graus para direita
+  CURVA_LEVE_ESQUERDA,     // Curva leve/correção para esquerda
+  CURVA_LEVE_DIREITA,      // Curva leve/correção para direita
+  NENHUM                  // Andar para frente (não detectou nada)
+};
+// ======================================================
+// VARIÁVEIS GLOBAIS — camelCase
+// Booleanos com prefixo "is" para leitura natural nos ifs
+// ======================================================
+bool isSensorPE;  // Ponta esquerda  ativo = robô saiu muito à esq.
+bool isSensorCE;  // Centro esquerda ativo = desvio leve à esq.
+bool isSensorCM;  // Centro meio     ativo = robô centralizado
+bool isSensorCD;  // Centro direita  ativo = desvio leve à dir.
+bool isSensorPD;  // Ponta direita   ativo = robô saiu muito à dir.
+Desafio desafioAtual = NENHUM; // Variavel que define o desafio que o robô esta enfrentando
+
+
+// ======================================================
+// PROTÓTIPOS DAS FUNÇÕES — camelCase, verbos no infinitivo
+// ======================================================
+void lerSensores();
+void detectarDesafio();
+void seguirLinha();
+void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo);
+
 // ======================================================
 // SETUP
 // ======================================================
 void setup() {
   Serial.begin(115200);
 }
+
 // ======================================================
 // LOOP
 // ======================================================
 void loop() {
-  Leituras();
-  SegueLinha();
-  Leituras();
+  lerSensores();
+  detectarDesafio();
+  seguirLinha();
+  lerSensores();  // Atualiza sensores após os movimentos de seguirLinha()
 }
 
 // ======================================================
-// FUNÇÕES
+// IMPLEMENTAÇÕES
 // ======================================================
-// ======== MOVER ========
-void Mover(char dir, int spd, int time) {
-  if (spd < 0) spd = 0;
-  if (spd > 100) spd = 100;
 
-  switch (dir) {
-    case 'f':
+/*
+ * lerSensores()
+ * -------------------------------------------------------
+ * O QUE FAZ : Lê os 5 sensores infravermelhos e armazena
+ *             o resultado nas variáveis globais isSensor_.
+ *             Também imprime os valores no Monitor Serial
+ *             para facilitar a depuração.
+ *
+ * QUANDO É CHAMADA:
+ *   • No início e no fim de cada ciclo do loop()
+ *   • Dentro de mover(), após cada movimento — garante que
+ *     isSensorCM esteja atualizado para o while() das curvas
+ * -------------------------------------------------------
+ */
+void lerSensores() {
+  isSensorPE = digitalRead(PIN_SENSOR_PE);
+  isSensorCE = digitalRead(PIN_SENSOR_CE);
+  isSensorCM = digitalRead(PIN_SENSOR_CM);
+  isSensorCD = digitalRead(PIN_SENSOR_CD);
+  isSensorPD = digitalRead(PIN_SENSOR_PD);
+
+  Serial.print("PE: ");
+  Serial.print(isSensorPE);
+  Serial.print(" | CE: ");
+  Serial.print(isSensorCE);
+  Serial.print(" | CM: ");
+  Serial.print(isSensorCM);
+  Serial.print(" | CD: ");
+  Serial.print(isSensorCD);
+  Serial.print(" | PD: ");
+  Serial.println(isSensorPD);
+}
+
+/*
+ * mover(direcao, velocidade, tempo)
+ * -------------------------------------------------------
+ * O QUE FAZ : Move o robô por um tempo determinado e para.
+ *
+ * PARÂMETROS:
+ *   direcao   → para onde ir        (enum Direcao)
+ *                 FRENTE   — avança em linha reta
+ *                 TRAS     — recua em linha reta
+ *                 DIREITA  — gira no próprio eixo à direita
+ *                 ESQUERDA — gira no próprio eixo à esquerda
+ *                 PARAR    — para imediatamente
+ *
+ *   velocidade → quão rápido ir     (enum PerfilVelocidade)
+ *                 VEL_BASE    — velocidade normal
+ *                 VEL_CURVA   — velocidade para curvas
+ *                 VEL_SUBIDA  — velocidade para subidas
+ *                 VEL_DESCIDA — velocidade para descidas
+ *
+ *   tempo     → quanto tempo durar  (milissegundos)
+ *                 Ex: 500 = meio segundo
+ *
+ * ATENÇÃO: usa delay(), que congela o ESP32 durante o
+ * movimento. Para um seguidor de linha isso é suficiente,
+ * mas impede qualquer outra tarefa simultânea.
+ * -------------------------------------------------------
+ */
+void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
+  int spd = (int)velocidade;  // converte o enum para int
+  if (spd < 0) spd = 0;       // limite inferior: mínimo 0
+  if (spd > 100) spd = 100;   // limite superior: máximo 100
+
+  switch (direcao) {
+    case FRENTE:
       motors.forward(spd);
       break;
-    case 't':
+
+    case TRAS:
       motors.backward(spd);
       break;
-    case 'd':
+
+    case DIREITA:
+      // Motor esquerdo avança + direito recua = giro à direita
       motors.setSpeedLeft(spd);
       motors.setSpeedRight(-spd);
       break;
-    case 'e':
+
+    case ESQUERDA:
+      // Motor direito avança + esquerdo recua = giro à esquerda
       motors.setSpeedLeft(-spd);
       motors.setSpeedRight(spd);
       break;
-    case 'p':
+
+    case PARAR:
     default:
       motors.stop();
       break;
   }
-  delay(time);
+
+  delay(tempo);
   motors.stop();
-  Leituras();
+
+  // Atualiza os sensores após o movimento para que o próximo
+  // passo de seguirLinha() — ou o while() das curvas —
+  // tome decisões com dados frescos
+  lerSensores();
 }
-// ======== LEITURAS ========
-void Leituras() {
-  // ======== LINHA ========
-  valLpE = digitalRead(LpE);
-  valLcE = digitalRead(LcE);
-  valLm = digitalRead(Lm);
-  valLcD = digitalRead(LcD);
-  valLpD = digitalRead(LpD);
- // ======== MONITOR SERIAL ========
-  Serial.print("LpE: ");
-  Serial.print(valLpE);
-  Serial.print(" | LcE: ");
-  Serial.print(valLcE);
-  Serial.print(" | Lm: ");
-  Serial.print(valLm);
-  Serial.print(" | LcD: ");
-  Serial.print(valLcD);
-  Serial.print(" | LpD: ");
-  Serial.println(valLpD);
+
+void detectarDesafio() {
+  if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {// -------- LINHA PRETA DETECTADA --------
+    if (isSensorPE) {
+      // -------- CURVA DE 90° PARA A ESQUERDA --------
+     desafioAtual = NOVENTA_GRAUS_ESQUERDA;
+    } else if (isSensorPD) {
+      // -------- CURVA DE 90° PARA A DIREITA --------
+     desafioAtual = NOVENTA_GRAUS_DIREITA;
+    } else if (isSensorCE) {
+      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
+      desafioAtual = CURVA_LEVE_ESQUERDA;
+    } else if (isSensorCD) {
+      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
+      desafioAtual = CURVA_LEVE_DIREITA;
+    } else {
+      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
+      desafioAtual = NENHUM;
+    }
+  }
 }
-// ======== SEGUE LINHA ========
-void SegueLinha() {
-  if (valLpE) {//-------- CURVA DE 90 GRAUS DA ESQUERDA --------
-    Mover('p', spd, 1000);
-    Mover('f', spd, 600);
-    Mover('p', spd, 1000);
-    while (!valLm) {
-      Mover('e', spdCurva, 3);
-    }
-    Mover('p', spd, 1000);
-    Mover('e', spd, 100);
-  } else if (valLpD) {//-------- CURVA DE 90 GRAUS DA DIREITA --------
-    Mover('p', spd, 1000);
-    Mover('f', spd, 600);
-    Mover('p', spd, 1000);
-    while (!valLm) {
-      Mover('d', spdCurva, 3);
-    }
-    Mover('p', spd, 1000);
-    Mover('d', spd, 100);
-  } else if (valLcE) {//-------- CURVA LEVE DA ESQUERDA --------
-    Mover('e', spd, 100);
-    Mover('f', spd, 50);
-  } else if (valLcD) {//-------- CURVA LEVE DA DIREITA --------
-    Mover('d', spd, 100);
-    Mover('f', spd, 50);
-  } else {//-------- DEFAULT --------
-    Mover('f', spd, 10);
+
+
+/*
+ * seguirLinha()
+ * -------------------------------------------------------
+ * O QUE FAZ : Lê os sensores e decide o que o robô deve
+ *             fazer, em ordem de prioridade:
+ *
+ *   1. isSensorPE ativo → saiu muito à esquerda
+ *                         → executa curva de 90° à esquerda
+ *
+ *   2. isSensorPD ativo → saiu muito à direita
+ *                         → executa curva de 90° à direita
+ *
+ *   3. isSensorCE ativo → desvio leve à esquerda
+ *                         → correção suave
+ *
+ *   4. isSensorCD ativo → desvio leve à direita
+ *                         → correção suave
+ *
+ *   5. Nenhum ativo     → robô centralizado
+ *                         → segue em frente
+ *
+ * POR QUE A CURVA DE 90° USA UMA SEQUÊNCIA LONGA:
+ *   O sensor de ponta detecta a interseção cedo demais —
+ *   o robô ainda não está alinhado com a nova direção.
+ *   A sequência (parar → avançar → girar até centralizar)
+ *   posiciona o robô corretamente antes de virar.
+ * -------------------------------------------------------
+ */
+void seguirLinha() {
+
+  switch (desafioAtual) {
+
+    case NOVENTA_GRAUS_ESQUERDA:
+      // -------- CURVA DE 90° PARA A ESQUERDA --------
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_CURVA, 450);
+      mover(PARAR, VEL_BASE, 1000);
+
+      while (!isSensorCM) {
+        mover(ESQUERDA, VEL_CURVA, 3);
+      }
+
+      mover(PARAR, VEL_BASE, 1000);
+      mover(ESQUERDA, VEL_CURVA, 100);
+      break;
+
+
+    case NOVENTA_GRAUS_DIREITA:
+      // -------- CURVA DE 90° PARA A DIREITA --------
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_CURVA, 450);
+      mover(PARAR, VEL_BASE, 1000);
+
+      while (!isSensorCM) {
+        mover(DIREITA, VEL_CURVA, 3);
+      }
+
+      mover(PARAR, VEL_BASE, 1000);
+      mover(DIREITA, VEL_CURVA, 100);
+      break;
+
+
+    case CURVA_LEVE_ESQUERDA:
+      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
+      mover(ESQUERDA, VEL_CURVA, 100);
+      mover(FRENTE, VEL_BASE, 50);
+      break;
+
+
+    case CURVA_LEVE_DIREITA:
+      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
+      mover(DIREITA, VEL_CURVA, 100);
+      mover(FRENTE, VEL_BASE, 50);
+      break;
+
+
+    case NENHUM:
+    default:
+      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
+      mover(FRENTE, VEL_BASE, 10);
+      break;
   }
 }
