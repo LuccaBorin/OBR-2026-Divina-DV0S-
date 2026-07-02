@@ -1,0 +1,1890 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Fritzing (https://fritzing.org/) -->
+<netlist date="Tue Sep 23 16:16:43 2025" sketch="OBR2026upd.fzz">
+ <net>
+  <connector id="connector44" name="3V3">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector44" name="3V3">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector14" name="VCC">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector14" name="VCC">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854229570" label="Jumper14" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854229572" label="Jumper14" title="Jumper"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125562" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125560" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125582" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125580" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125622" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125620" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125602" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125600" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector16" name="VCC">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector16" name="VCC">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector1" name="+">
+   <part id="854103442" label="Bateria" title="Battery"/>
+  </connector>
+  <connector id="connector1" name="+">
+   <part id="854103440" label="Bateria" title="Battery"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854229572" label="Jumper14" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854229570" label="Jumper14" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854157780" label="Via2" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854157781" label="Via2" title="Via"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124620" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124622" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124680" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124682" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124660" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124662" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector1" name="vcc">
+   <part id="854159060" label="S1" title="Basic Servo"/>
+  </connector>
+  <connector id="connector1" name="vcc">
+   <part id="854159062" label="S1" title="Basic Servo"/>
+  </connector>
+  <connector id="connector1" name="vcc">
+   <part id="854159092" label="S2" title="Basic Servo"/>
+  </connector>
+  <connector id="connector1" name="vcc">
+   <part id="854159090" label="S2" title="Basic Servo"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854166400" label="Via9" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854166401" label="Via9" title="Via"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854226520" label="Jumper12" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854226522" label="Jumper12" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854226522" label="Jumper12" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854226520" label="Jumper12" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854243410" label="Jumper19" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854243412" label="Jumper19" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854157541" label="Via1" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854157540" label="Via1" title="Via"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854243412" label="Jumper19" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854243410" label="Jumper19" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854164160" label="Via7" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854164161" label="Via7" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854166371" label="Via8" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854166370" label="Via8" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854174100" label="Via16" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854174101" label="Via16" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854160440" label="Via3" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854160441" label="Via3" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854164130" label="Via6" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854164131" label="Via6" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854160470" label="Via4" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854160471" label="Via4" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854174720" label="Via17" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854174721" label="Via17" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector32" name="GND">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector32" name="GND">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector19" name="GND">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector19" name="GND">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector13" name="GND">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector13" name="GND">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="gnd">
+   <part id="854159090" label="S2" title="Basic Servo"/>
+  </connector>
+  <connector id="connector0" name="gnd">
+   <part id="854159092" label="S2" title="Basic Servo"/>
+  </connector>
+  <connector id="connector0" name="-">
+   <part id="854103442" label="Bateria" title="Battery"/>
+  </connector>
+  <connector id="connector0" name="-">
+   <part id="854103440" label="Bateria" title="Battery"/>
+  </connector>
+  <connector id="connector17" name="GND">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector17" name="GND">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124662" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124660" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124682" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124680" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124622" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124620" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125622" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125620" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125582" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125580" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125562" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="125560" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="gnd">
+   <part id="854159060" label="S1" title="Basic Servo"/>
+  </connector>
+  <connector id="connector0" name="gnd">
+   <part id="854159062" label="S1" title="Basic Servo"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125602" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="125600" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854229630" label="Jumper15" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854229632" label="Jumper15" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854243020" label="Jumper18" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854243022" label="Jumper18" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854176630" label="Via19" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854176631" label="Via19" title="Via"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854226550" label="Jumper13" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854226552" label="Jumper13" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854229632" label="Jumper15" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854229630" label="Jumper15" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854243022" label="Jumper18" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854243020" label="Jumper18" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854226552" label="Jumper13" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854226550" label="Jumper13" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854170720" label="Via10" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854170721" label="Via10" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854176600" label="Via18" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854176601" label="Via18" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854171590" label="Via12" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854171591" label="Via12" title="Via"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854173430" label="Via14" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854173431" label="Via14" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854170751" label="Via11" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854170750" label="Via11" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854171641" label="Via13" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854171640" label="Via13" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854173571" label="Via15" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854173570" label="Via15" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector10" name="VTD">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector10" name="VTD">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector1" name="+">
+   <part id="854643900" label="+- Ponte H" title="Battery"/>
+  </connector>
+  <connector id="connector1" name="+">
+   <part id="854643902" label="+- Ponte H" title="Battery"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854193390" label="Via40" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193391" label="Via40" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193360" label="Via39" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193361" label="Via39" title="Via"/>
+  </connector>
+  <connector id="connector4" name="MotorB2">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector4" name="MotorB2">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125622" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125620" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854194081" label="Via45" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854194080" label="Via45" title="Via"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125602" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125600" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854194050" label="Via44" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854194051" label="Via44" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193790" label="Via41" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193791" label="Via41" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193951" label="Via43" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193950" label="Via43" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193821" label="Via42" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854193820" label="Via42" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854192770" label="Via37" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854192771" label="Via37" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854192800" label="Via38" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854192801" label="Via38" title="Via"/>
+  </connector>
+  <connector id="connector3" name="MotorB1">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector3" name="MotorB1">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125622" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125620" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125602" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125600" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854189780" label="Via35" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854189781" label="Via35" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854189660" label="Via34" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854189661" label="Via34" title="Via"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125582" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125580" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="MotorA2">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector1" name="MotorA2">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125562" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="125560" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="MotorA1">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector0" name="MotorA1">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854189170" label="Via32" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854189171" label="Via32" title="Via"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125562" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125560" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125582" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="125580" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector1" name="pin2">
+   <part id="124160" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124162" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector10" name="GND">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector10" name="GND">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204140" label="Via54" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204141" label="Via54" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204080" label="Via53" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204081" label="Via53" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pin3">
+   <part id="124160" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124162" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector16" name="VCC">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector16" name="VCC">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204200" label="Via56" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204201" label="Via56" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204171" label="Via55" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204170" label="Via55" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854204290" label="Via57" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204291" label="Via57" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204441" label="Via62" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204440" label="Via62" title="Via"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124200" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124202" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="IN1">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="IN1">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector12" name="GND">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector12" name="GND">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124140" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124142" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector3" name="IN3">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector3" name="IN3">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124140" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124142" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector1" name="IN2">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector1" name="IN2">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124160" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124162" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector9" name="GND">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector9" name="GND">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204410" label="Via61" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204411" label="Via61" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204321" label="Via58" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204320" label="Via58" title="Via"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124202" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124200" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208140" label="Via63" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208141" label="Via63" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208200" label="Via65" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208201" label="Via65" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector15" name="VCC">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector15" name="VCC">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204380" label="Via60" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204381" label="Via60" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204351" label="Via59" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854204350" label="Via59" title="Via"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124202" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124200" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854209030" label="Via68" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854209031" label="Via68" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208170" label="Via64" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208171" label="Via64" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854209001" label="Via67" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854209000" label="Via67" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208231" label="Via66" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854208230" label="Via66" title="Via"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854201370" label="Via46" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201371" label="Via46" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201401" label="Via47" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201400" label="Via47" title="Via"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124120" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124122" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector17" name="VCC">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector17" name="VCC">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854201430" label="Via48" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201431" label="Via48" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201461" label="Via49" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201460" label="Via49" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854257330" label="Via83" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854257331" label="Via83" title="Via"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124120" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124122" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector11" name="GND">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector11" name="GND">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector4" name="IN4">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector4" name="IN4">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201550" label="Via52" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201551" label="Via52" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201521" label="Via51" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854201520" label="Via51" title="Via"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124122" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124120" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector18" name="VCC">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector18" name="VCC">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124140" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124142" label="Linhas" title="Generic female header - 3 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector36" name="A6">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector36" name="A6">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector7" name="OUT3">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector7" name="OUT3">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector35" name="A7">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector35" name="A7">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector8" name="OUT4">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector8" name="OUT4">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector5" name="OUT1">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector5" name="OUT1">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854212110" label="Via69" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854212111" label="Via69" title="Via"/>
+  </connector>
+  <connector id="connector40" name="A2">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector40" name="A2">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector39" name="A3">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector39" name="A3">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854212500" label="Jumper2" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854212502" label="Jumper2" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854212502" label="Jumper2" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854212500" label="Jumper2" title="Jumper"/>
+  </connector>
+  <connector id="connector6" name="OUT2">
+   <part id="854275710" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+  <connector id="connector6" name="OUT2">
+   <part id="854275712" label="Mod1" title="infrared 4 channels"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854218300" label="Via74" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854218301" label="Via74" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854218330" label="Via75" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854218331" label="Via75" title="Via"/>
+  </connector>
+  <connector id="connector7" name="3SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector7" name="3SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854218192" label="Jumper6" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854218190" label="Jumper6" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854218192" label="Jumper6" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854218190" label="Jumper6" title="Jumper"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector14" name="7SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector14" name="7SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector15" name="7SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector15" name="7SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854215630" label="Via71" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854215631" label="Via71" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854215600" label="Via70" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854215601" label="Via70" title="Via"/>
+  </connector>
+  <connector id="connector13" name="6SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector13" name="6SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854216690" label="Via73" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854216691" label="Via73" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854216620" label="Via72" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854216621" label="Via72" title="Via"/>
+  </connector>
+  <connector id="connector10" name="5SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector10" name="5SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124622" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124620" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector3" name="pin4">
+   <part id="125560" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="125562" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854251310" label="Jumper25" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854251312" label="Jumper25" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854251312" label="Jumper25" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854251310" label="Jumper25" title="Jumper"/>
+  </connector>
+  <connector id="connector42" name="A0">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector42" name="A0">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pulse">
+   <part id="854159090" label="S2" title="Basic Servo"/>
+  </connector>
+  <connector id="connector2" name="pulse">
+   <part id="854159092" label="S2" title="Basic Servo"/>
+  </connector>
+  <connector id="connector17" name="D0/RX">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector17" name="D0/RX">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pulse">
+   <part id="854159060" label="S1" title="Basic Servo"/>
+  </connector>
+  <connector id="connector2" name="pulse">
+   <part id="854159062" label="S1" title="Basic Servo"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854251820" label="Jumper26" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854251822" label="Jumper26" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854251822" label="Jumper26" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854251820" label="Jumper26" title="Jumper"/>
+  </connector>
+  <connector id="connector16" name="D1/TX">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector16" name="D1/TX">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854248580" label="Via81" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854248581" label="Via81" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854248450" label="Via80" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854248451" label="Via80" title="Via"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="125622" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="125620" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector22" name="D4">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector22" name="D4">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854249880" label="Via82" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854249881" label="Via82" title="Via"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="125580" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="125582" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector25" name="D7">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector25" name="D7">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector3" name="pin4">
+   <part id="125580" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="125582" label="M2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854250150" label="Jumper22" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854250152" label="Jumper22" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854250152" label="Jumper22" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854250150" label="Jumper22" title="Jumper"/>
+  </connector>
+  <connector id="connector26" name="D8">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector26" name="D8">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector28" name="D10">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector28" name="D10">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854246970" label="Via77" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854246971" label="Via77" title="Via"/>
+  </connector>
+  <connector id="connector7" name="in3">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector7" name="in3">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector27" name="D9">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector27" name="D9">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854247000" label="Via78" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854247001" label="Via78" title="Via"/>
+  </connector>
+  <connector id="connector6" name="in2">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector6" name="in2">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector24" name="D6">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector24" name="D6">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854247030" label="Via79" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854247031" label="Via79" title="Via"/>
+  </connector>
+  <connector id="connector5" name="in1">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector5" name="in1">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector21" name="D3">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector21" name="D3">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854248390" label="Jumper21" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854248392" label="Jumper21" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854248392" label="Jumper21" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854248390" label="Jumper21" title="Jumper"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="125602" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="125600" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector29" name="D11/MOSI">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector29" name="D11/MOSI">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854246920" label="Via76" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854246921" label="Via76" title="Via"/>
+  </connector>
+  <connector id="connector8" name="in4">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector8" name="in4">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector25" name="0SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector25" name="0SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854235440" label="Jumper16" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854235442" label="Jumper16" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854235442" label="Jumper16" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854235440" label="Jumper16" title="Jumper"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124680" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124682" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector24" name="0SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector24" name="0SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854235570" label="Jumper17" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854235572" label="Jumper17" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854235572" label="Jumper17" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854235570" label="Jumper17" title="Jumper"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124680" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124682" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pin3">
+   <part id="125560" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="125562" label="M1" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854269840" label="Jumper27" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854269842" label="Jumper27" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854269842" label="Jumper27" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854269840" label="Jumper27" title="Jumper"/>
+  </connector>
+  <connector id="connector20" name="D2">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector20" name="D2">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pin3">
+   <part id="125600" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="125602" label="M3" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854269970" label="Jumper28" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854269972" label="Jumper28" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854269972" label="Jumper28" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854269970" label="Jumper28" title="Jumper"/>
+  </connector>
+  <connector id="connector41" name="A1">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector41" name="A1">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector18" name="INPUTSDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector18" name="INPUTSDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854313620" label="Jumper29" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854313622" label="Jumper29" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854313622" label="Jumper29" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854313620" label="Jumper29" title="Jumper"/>
+  </connector>
+  <connector id="connector38" name="A4">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector38" name="A4">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector3" name="pin4">
+   <part id="124620" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124622" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector11" name="5SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector11" name="5SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector3" name="pin4">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector26" name="1SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector26" name="1SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pin3">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector27" name="1SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector27" name="1SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector3" name="pin4">
+   <part id="124660" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector3" name="pin4">
+   <part id="124662" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector9" name="4SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector9" name="4SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854217572" label="Jumper3" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854217570" label="Jumper3" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854217572" label="Jumper3" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854217570" label="Jumper3" title="Jumper"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector2" name="pin3">
+   <part id="124660" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="124662" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector8" name="4SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector8" name="4SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854217782" label="Jumper4" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854217780" label="Jumper4" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854217782" label="Jumper4" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854217780" label="Jumper4" title="Jumper"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector4" name="pin5">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector12" name="6SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector12" name="6SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="via">
+   <part id="854644350" label="Via84" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854644351" label="Via84" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854644380" label="Via85" title="Via"/>
+  </connector>
+  <connector id="connector0" name="via">
+   <part id="854644381" label="Via85" title="Via"/>
+  </connector>
+  <connector id="connector0" name="-">
+   <part id="854643900" label="+- Ponte H" title="Battery"/>
+  </connector>
+  <connector id="connector0" name="-">
+   <part id="854643902" label="+- Ponte H" title="Battery"/>
+  </connector>
+  <connector id="connector9" name="GND">
+   <part id="854567732" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+  <connector id="connector9" name="GND">
+   <part id="854567730" label="PonteH" title="Ponte H Mini"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="pin1">
+   <part id="124620" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124622" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector1" name="pin2">
+   <part id="124620" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124622" label="Distancia" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="pin1">
+   <part id="124660" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124662" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector1" name="pin2">
+   <part id="124660" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124662" label="Distancia G" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="pin1">
+   <part id="124680" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124682" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector1" name="pin2">
+   <part id="124680" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector1" name="pin2">
+   <part id="124682" label="Distancia 2" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="pin1">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector6" name="pin7">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector6" name="pin7">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector5" name="pin6">
+   <part id="124470" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124472" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="pin1">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector6" name="pin7">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector6" name="pin7">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector4" name="pin5">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854218132" label="Jumper5" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854218130" label="Jumper5" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854218132" label="Jumper5" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854218130" label="Jumper5" title="Jumper"/>
+  </connector>
+  <connector id="connector6" name="3SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector6" name="3SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector5" name="pin6">
+   <part id="854126470" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="854126472" label="Garra C" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector0" name="pin1">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector0" name="pin1">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector6" name="pin7">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector6" name="pin7">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector5" name="pin6">
+   <part id="124510" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="124512" label="Cores" title="Generic female header - 7 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector34" name="5V">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector34" name="5V">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector18" name="RESET">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector18" name="RESET">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector33" name="RESET">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector33" name="RESET">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector23" name="D5">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector23" name="D5">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="125622" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+  <connector id="connector2" name="pin3">
+   <part id="125620" label="M4" title="Generic female header - 6 pins"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector45" name="D13/SCK">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector45" name="D13/SCK">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector37" name="A5">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector37" name="A5">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854219162" label="Jumper9" title="Jumper"/>
+  </connector>
+  <connector id="connector0" name="jumperConnector0">
+   <part id="854219160" label="Jumper9" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854219162" label="Jumper9" title="Jumper"/>
+  </connector>
+  <connector id="connector1" name="jumperConnector1">
+   <part id="854219160" label="Jumper9" title="Jumper"/>
+  </connector>
+  <connector id="connector19" name="INPUTSCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector19" name="INPUTSCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector30" name="D12/MISO">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector30" name="D12/MISO">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector43" name="AREF">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector43" name="AREF">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector31" name="VIN">
+   <part id="854101450" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+  <connector id="connector31" name="VIN">
+   <part id="854101452" label="Nano" title="Arduino Nano (Rev3.0)"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector21" name="A0">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector21" name="A0">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector22" name="A1">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector22" name="A1">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector23" name="A2">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector23" name="A2">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector4" name="2SDA">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector4" name="2SDA">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector20" name="RESET">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector20" name="RESET">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector5" name="2SCL">
+   <part id="126430" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+  <connector id="connector5" name="2SCL">
+   <part id="126432" label="Multi I2c" title="Adafruit TCA9548A"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector6" name="pin7">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector6" name="pin7">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector7" name="pin8">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector7" name="pin8">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector4" name="pin5">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector4" name="pin5">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+ </net>
+ <net>
+  <connector id="connector5" name="pin6">
+   <part id="854155100" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+  <connector id="connector5" name="pin6">
+   <part id="854155102" label="Giroscopico" title="MPU-6050 Board GY-521"/>
+  </connector>
+ </net>
+</netlist>

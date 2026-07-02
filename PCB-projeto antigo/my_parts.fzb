@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module fritzingVersion="0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806" icon="Mine.png">
+    <title>My Parts</title>
+    <instances>
+        <instance moduleIdRef="DC Mini Metal Gear Motor_2015fb8e9adee36c637bb22e371b121f_1" modelIndex="5756" path="C:/Users/PC/Documents/Fritzing/parts/user/DC Mini Metal Gear Motor_2015fb8e9adee36c637bb22e371b121f_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="L298N-motor-driver_1" modelIndex="7343" path="C:/Users/PC/Documents/Fritzing/parts/user/L298N-motor-driver_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="adafruit_79e03929cd60efb5be394548d08bdfc7_1" modelIndex="7655" path="C:/Users/PC/Documents/Fritzing/parts/user/adafruit_79e03929cd60efb5be394548d08bdfc7_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="vl53lox_1" modelIndex="7659" path="C:/Users/PC/Documents/Fritzing/parts/user/vl53lox_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="adafruit_6220ddee62398d885fd79aedffc82196_1" modelIndex="12378" path="C:/Users/PC/AppData/Roaming/Fritzing/partfactory/ff1808d478c7c7da23936e07b1955b2c/contrib/adafruit_6220ddee62398d885fd79aedffc82196_1.fzp">
+            <views/>
+        </instance>
+    </instances>
+</module>
