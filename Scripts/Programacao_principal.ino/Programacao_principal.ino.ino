@@ -312,7 +312,7 @@ void seguirLinha() {
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_CURVA, 450);
+      mover(FRENTE, VEL_CURVA, 500);
       mover(PARAR, VEL_BASE, 1000);
 
       while (!isSensorCM) {
@@ -320,14 +320,14 @@ void seguirLinha() {
       }
 
       mover(PARAR, VEL_BASE, 1000);
-      mover(ESQUERDA, VEL_CURVA, 100);
+      mover(ESQUERDA, VEL_CURVA, 125);
       break;
 
 
     case NOVENTA_GRAUS_DIREITA:
       // -------- CURVA DE 90° PARA A DIREITA --------
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_CURVA, 450);
+      mover(FRENTE, VEL_CURVA, 500);
       mover(PARAR, VEL_BASE, 1000);
 
       while (!isSensorCM) {
@@ -335,7 +335,7 @@ void seguirLinha() {
       }
 
       mover(PARAR, VEL_BASE, 1000);
-      mover(DIREITA, VEL_CURVA, 100);
+      mover(DIREITA, VEL_CURVA, 125);
       break;
 
 
@@ -356,7 +356,7 @@ void seguirLinha() {
     case NENHUM:
     default:
       // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE, VEL_BASE, 10);
+      mover(FRENTE, VEL_BASE, 8);
       break;
   }
 }
