@@ -1,13 +1,13 @@
 /*
  * ======================================================
- * Projeto  : Robô Seguidor de Linha
- * Autor    : ...
- * Data     : ...
+ * Projeto  : Robô para a Olimpiada Brasileira de Robotica
+ * Autor    : Lucca Pupo Borin
+ * Data     : 02/07/2026
  * ======================================================
  * Hardware:
  *   Plataforma  : RoboCore Vespa (ESP32)
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
- *   Motor driver: L298N (via biblioteca VespaMotors)
+ *   Motor driver: DRV8837 (via biblioteca VespaMotors)
  *
  * Convenções de nomenclatura utilizadas:
  *   #define / pinos  → SNAKE_CASE_MAIUSCULO
@@ -90,18 +90,18 @@ enum Desafio {
   NOVENTA_GRAUS_DIREITA,   // Curva de 90 graus para direita
   CURVA_LEVE_ESQUERDA,     // Curva leve/correção para esquerda
   CURVA_LEVE_DIREITA,      // Curva leve/correção para direita
-  NENHUM                  // Andar para frente (não detectou nada)
+  NENHUM                   // Andar para frente (não detectou nada)
 };
 // ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
 // Booleanos com prefixo "is" para leitura natural nos ifs
 // ======================================================
-bool isSensorPE;  // Ponta esquerda  ativo = robô saiu muito à esq.
-bool isSensorCE;  // Centro esquerda ativo = desvio leve à esq.
-bool isSensorCM;  // Centro meio     ativo = robô centralizado
-bool isSensorCD;  // Centro direita  ativo = desvio leve à dir.
-bool isSensorPD;  // Ponta direita   ativo = robô saiu muito à dir.
-Desafio desafioAtual = NENHUM; // Variavel que define o desafio que o robô esta enfrentando
+bool isSensorPE;                // Ponta esquerda  ativo = robô saiu muito à esq.
+bool isSensorCE;                // Centro esquerda ativo = desvio leve à esq.
+bool isSensorCM;                // Centro meio     ativo = robô centralizado
+bool isSensorCD;                // Centro direita  ativo = desvio leve à dir.
+bool isSensorPD;                // Ponta direita   ativo = robô saiu muito à dir.
+Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
 
 
 // ======================================================
@@ -234,24 +234,55 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
   lerSensores();
 }
 
+/*
+ * detectarDesafio()
+ * -------------------------------------------------------
+ * O QUE FAZ : Analisa os sensores e determina qual
+ *             situação o robô está enfrentando,
+ *             armazenando o resultado em desafioAtual.
+ *
+ * PRIORIDADE DAS DECISÕES:
+ *   1. isSensorPE ativo → curva de 90° à esquerda
+ *
+ *   2. isSensorPD ativo → curva de 90° à direita
+ *
+ *   3. isSensorCE ativo → correção suave à esquerda
+ *
+ *   4. isSensorCD ativo → correção suave à direita
+ *
+ *   5. Nenhum dos casos acima
+ *      → segue em frente (NENHUM)
+ *
+ * POR QUE ESTA FUNÇÃO EXISTE:
+ *   A decisão sobre qual movimento executar fica
+ *   separada da execução do movimento em si.
+ *   Assim, seguirLinha() apenas executa a ação
+ *   correspondente usando um switch, deixando o
+ *   código mais organizado e facilitando a inclusão
+ *   de novos desafios no futuro.
+ * -------------------------------------------------------
+ */
 void detectarDesafio() {
-  if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {// -------- LINHA PRETA DETECTADA --------
-    if (isSensorPE) {
-      // -------- CURVA DE 90° PARA A ESQUERDA --------
-     desafioAtual = NOVENTA_GRAUS_ESQUERDA;
-    } else if (isSensorPD) {
-      // -------- CURVA DE 90° PARA A DIREITA --------
-     desafioAtual = NOVENTA_GRAUS_DIREITA;
-    } else if (isSensorCE) {
-      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
-      desafioAtual = CURVA_LEVE_ESQUERDA;
-    } else if (isSensorCD) {
-      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
-      desafioAtual = CURVA_LEVE_DIREITA;
-    } else {
-      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      desafioAtual = NENHUM;
-    }
+
+  if (isSensorPE) {
+    // -------- CURVA DE 90° PARA A ESQUERDA --------
+    desafioAtual = NOVENTA_GRAUS_ESQUERDA;
+
+  } else if (isSensorPD) {
+    // -------- CURVA DE 90° PARA A DIREITA --------
+    desafioAtual = NOVENTA_GRAUS_DIREITA;
+
+  } else if (isSensorCE) {
+    // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
+    desafioAtual = CURVA_LEVE_ESQUERDA;
+
+  } else if (isSensorCD) {
+    // -------- CORREÇÃO SUAVE PARA A DIREITA --------
+    desafioAtual = CURVA_LEVE_DIREITA;
+
+  } else {
+    // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
+    desafioAtual = NENHUM;
   }
 }
 
@@ -259,29 +290,19 @@ void detectarDesafio() {
 /*
  * seguirLinha()
  * -------------------------------------------------------
- * O QUE FAZ : Lê os sensores e decide o que o robô deve
- *             fazer, em ordem de prioridade:
+ * O QUE FAZ : Executa a ação correspondente ao desafio
+ *             armazenado em desafioAtual.
  *
- *   1. isSensorPE ativo → saiu muito à esquerda
- *                         → executa curva de 90° à esquerda
+ * FUNCIONAMENTO:
+ *   detectarDesafio() define qual situação o robô está
+ *   enfrentando. Em seguida, esta função utiliza um
+ *   switch para executar o movimento adequado.
  *
- *   2. isSensorPD ativo → saiu muito à direita
- *                         → executa curva de 90° à direita
- *
- *   3. isSensorCE ativo → desvio leve à esquerda
- *                         → correção suave
- *
- *   4. isSensorCD ativo → desvio leve à direita
- *                         → correção suave
- *
- *   5. Nenhum ativo     → robô centralizado
- *                         → segue em frente
- *
- * POR QUE A CURVA DE 90° USA UMA SEQUÊNCIA LONGA:
- *   O sensor de ponta detecta a interseção cedo demais —
- *   o robô ainda não está alinhado com a nova direção.
- *   A sequência (parar → avançar → girar até centralizar)
- *   posiciona o robô corretamente antes de virar.
+ * VANTAGEM:
+ *   Separar a tomada de decisão da execução torna o
+ *   código mais organizado, facilita a manutenção e
+ *   permite adicionar novos desafios sem alterar a
+ *   estrutura principal da função.
  * -------------------------------------------------------
  */
 void seguirLinha() {
