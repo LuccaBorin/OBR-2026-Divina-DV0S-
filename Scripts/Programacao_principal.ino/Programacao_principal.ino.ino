@@ -86,8 +86,8 @@ enum PerfilVelocidade {
 // ENUM: Desafio
 // ======================================================
 enum Desafio {
-  INTESECAO_SEM_MARCACAO     // Interseções sem marcaçoes
-    NOVENTA_GRAUS_ESQUERDA,  // Curva de 90 graus para esquerda
+  INTERSECAO_SEM_MARCACAO,     // Interseções sem marcaçoes
+  NOVENTA_GRAUS_ESQUERDA,  // Curva de 90 graus para esquerda
   NOVENTA_GRAUS_DIREITA,     // Curva de 90 graus para direita
   CURVA_LEVE_ESQUERDA,       // Curva leve/correção para esquerda
   CURVA_LEVE_DIREITA,        // Curva leve/correção para direita
@@ -195,6 +195,7 @@ void lerSensores() {
  * -------------------------------------------------------
  */
 void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
+  lerSensores();
   int spd = (int)velocidade;  // converte o enum para int
   if (spd < 0) spd = 0;       // limite inferior: mínimo 0
   if (spd > 100) spd = 100;   // limite superior: máximo 100
@@ -319,6 +320,7 @@ void seguirLinha() {
       mover(FRENTE, VEL_CURVA, 175);
       detectarDesafio();
       if (desafioAtual == INTERSECAO_SEM_MARCACAO) {
+        mover(PARAR, VEL_BASE, 2000);
         mover(FRENTE, VEL_CURVA, 275);
       }
       mover(PARAR, VEL_BASE, 200);
@@ -340,6 +342,7 @@ void seguirLinha() {
       mover(FRENTE, VEL_CURVA, 175);
       detectarDesafio();
       if (desafioAtual == INTERSECAO_SEM_MARCACAO) {
+        mover(PARAR, VEL_BASE, 2000);
         mover(FRENTE, VEL_CURVA, 275);
       }
       mover(PARAR, VEL_BASE, 200);
