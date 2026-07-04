@@ -315,12 +315,16 @@ void seguirLinha() {
 
   switch (desafioAtual) {
 
+    case INTERSECAO_SEM_MARCACAO:
+      // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_CURVA, 475);
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
-      mover(PARAR, VEL_BASE, 2000);
+      mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_CURVA, 200);
-      if (isSensorPE && isSensorPD) {
-        mover(PARAR, VEL_BASE, 2000);
+      if (isSensorPE && isSensorPD) {  // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
+        mover(PARAR, VEL_BASE, 1000);
         mover(FRENTE, VEL_CURVA, 275);
       }
       mover(PARAR, VEL_BASE, 200);
@@ -331,28 +335,25 @@ void seguirLinha() {
         mover(ESQUERDA, VEL_CURVA, 3);
       }
 
-      mover(PARAR, VEL_BASE, 200);
       mover(ESQUERDA, VEL_CURVA, 125);
       break;
 
 
     case NOVENTA_GRAUS_DIREITA:
       // -------- CURVA DE 90° PARA A DIREITA --------
-      mover(PARAR, VEL_BASE, 2000);
+      mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_CURVA, 200);
-      if (isSensorPD && isSensorPE) {
-        mover(PARAR, VEL_BASE, 2000);
+      if (isSensorPD && isSensorPE) {  // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
+        mover(PARAR, VEL_BASE, 1000);
         mover(FRENTE, VEL_CURVA, 275);
       }
       mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_CURVA, 275);
-      mover(PARAR, VEL_BASE, 200);
 
       while (!isSensorCM) {
         mover(DIREITA, VEL_CURVA, 3);
       }
 
-      mover(PARAR, VEL_BASE, 200);
       mover(DIREITA, VEL_CURVA, 125);
       break;
 
