@@ -86,12 +86,12 @@ enum PerfilVelocidade {
 // ENUM: Desafio
 // ======================================================
 enum Desafio {
-  INTERSECAO_SEM_MARCACAO,     // Interseções sem marcaçoes
-  NOVENTA_GRAUS_ESQUERDA,  // Curva de 90 graus para esquerda
-  NOVENTA_GRAUS_DIREITA,     // Curva de 90 graus para direita
-  CURVA_LEVE_ESQUERDA,       // Curva leve/correção para esquerda
-  CURVA_LEVE_DIREITA,        // Curva leve/correção para direita
-  NENHUM                     // Andar para frente (não detectou nada)
+  INTERSECAO_SEM_MARCACAO,  // Interseções sem marcaçoes
+  NOVENTA_GRAUS_ESQUERDA,   // Curva de 90 graus para esquerda
+  NOVENTA_GRAUS_DIREITA,    // Curva de 90 graus para direita
+  CURVA_LEVE_ESQUERDA,      // Curva leve/correção para esquerda
+  CURVA_LEVE_DIREITA,       // Curva leve/correção para direita
+  NENHUM                    // Andar para frente (não detectou nada)
 };
 // ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
@@ -267,7 +267,8 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
 void detectarDesafio() {
   if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD) {
-      // -------- INTERSECÇÃO DUAS LINHAS SEM COR --------
+      // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
+      desafioAtual = INTERSECAO_SEM_MARCACAO;
     } else if (isSensorPE && !isSensorPD) {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
