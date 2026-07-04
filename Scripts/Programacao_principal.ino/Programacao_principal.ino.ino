@@ -319,6 +319,8 @@ void seguirLinha() {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       mover(PARAR, VEL_BASE, 1000);
       mover(FRENTE, VEL_BASE, 475);
+      break;
+
     case NOVENTA_GRAUS_ESQUERDA:
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       mover(PARAR, VEL_BASE, 200);
