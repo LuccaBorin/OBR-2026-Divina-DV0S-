@@ -63,7 +63,6 @@ VespaMotors motors;
 // ENUM: Direcao
 // ======================================================
 enum Direcao {
-  FRENTE_SEM_PARAR,
   FRENTE,    // Ambos os motores para frente
   TRAS,      // Ambos os motores para trás
   DIREITA,   // Giro no próprio eixo para a direita
@@ -77,7 +76,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
-  VEL_DEFAULT = 25,
+  VEL_DEFAULT = 80,
   VEL_BASE = 65,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
@@ -203,35 +202,24 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
   if (spd > 100) spd = 100;   // limite superior: máximo 100
 
   switch (direcao) {
-    case FRENTE_SEM_PARAR:
-      motors.forward(spd);
-      break;
     case FRENTE:
       motors.forward(spd);
-      delay(tempo);
-      motors.stop();
       break;
 
     case TRAS:
       motors.backward(spd);
-      delay(tempo);
-      motors.stop();
       break;
 
     case DIREITA:
       // Motor esquerdo avança + direito recua = giro à direita
       motors.setSpeedLeft(spd);
       motors.setSpeedRight(-spd);
-      delay(tempo);
-      motors.stop();
       break;
 
     case ESQUERDA:
       // Motor direito avança + esquerdo recua = giro à esquerda
       motors.setSpeedLeft(-spd);
       motors.setSpeedRight(spd);
-      delay(tempo);
-      motors.stop();
       break;
 
     case PARAR:
@@ -239,6 +227,9 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
       motors.stop();
       break;
   }
+
+  delay(tempo);
+  motors.stop();
 
   // Atualiza os sensores após o movimento para que o próximo
   // passo de seguirLinha() — ou o while() das curvas —
@@ -332,52 +323,52 @@ void seguirLinha() {
       break;
 
     case NOVENTA_GRAUS_ESQUERDA:
-      // -------- CURVA DE 90° PARA A ESQUERDA --------
-      mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 250);
+  // -------- CURVA DE 90° PARA A ESQUERDA --------
+  mover(PARAR, VEL_BASE, 200);
+  mover(FRENTE, VEL_BASE, 250);
 
-      if (isSensorCM) {
-        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
-        mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 175);
-      } else {
-        // -------- CURVA 90° "PURA" --------
-        mover(PARAR, VEL_BASE, 200);
-        mover(FRENTE, VEL_BASE, 175);
-        mover(PARAR, VEL_BASE, 200);
+  if (isSensorCM) {
+    // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
+    mover(PARAR, VEL_BASE, 1000);
+    mover(FRENTE, VEL_BASE, 175);
+  } else {
+    // -------- CURVA 90° "PURA" --------
+    mover(PARAR, VEL_BASE, 200);
+    mover(FRENTE, VEL_BASE, 175);
+    mover(PARAR, VEL_BASE, 200);
 
-        while (!isSensorCM) {
-          mover(ESQUERDA, VEL_CURVA, 3);
-        }
+    while (!isSensorCM) {
+      mover(ESQUERDA, VEL_CURVA, 3);
+    }
 
-        mover(ESQUERDA, VEL_CURVA, 125);
-      }
+    mover(ESQUERDA, VEL_CURVA, 125);
+  }
 
-      break;
+  break;
 
-    case NOVENTA_GRAUS_DIREITA:
-      // -------- CURVA DE 90° PARA A DIREITA --------
-      mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 250);
+case NOVENTA_GRAUS_DIREITA:
+  // -------- CURVA DE 90° PARA A DIREITA --------
+  mover(PARAR, VEL_BASE, 200);
+  mover(FRENTE, VEL_BASE, 250);
 
-      if (isSensorCM) {
-        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
-        mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 175);
-      } else {
-        // -------- CURVA 90° "PURA" --------
-        mover(PARAR, VEL_BASE, 200);
-        mover(FRENTE, VEL_BASE, 175);
-        mover(PARAR, VEL_BASE, 200);
+  if (isSensorCM) {
+    // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
+    mover(PARAR, VEL_BASE, 1000);
+    mover(FRENTE, VEL_BASE, 175);
+  } else {
+    // -------- CURVA 90° "PURA" --------
+    mover(PARAR, VEL_BASE, 200);
+    mover(FRENTE, VEL_BASE, 175);
+    mover(PARAR, VEL_BASE, 200);
 
-        while (!isSensorCM) {
-          mover(DIREITA, VEL_CURVA, 3);
-        }
+    while (!isSensorCM) {
+      mover(DIREITA, VEL_CURVA, 3);
+    }
 
-        mover(DIREITA, VEL_CURVA, 125);
-      }
+    mover(DIREITA, VEL_CURVA, 125);
+  }
 
-      break;
+  break;
 
     case CURVA_LEVE_ESQUERDA:
       // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
@@ -387,14 +378,14 @@ void seguirLinha() {
 
     case CURVA_LEVE_DIREITA:
       // -------- CORREÇÃO SUAVE PARA A DIREITA --------
-      mover(DIREITA, VEL_CURVA, 125);
+      mover(DIREITA, VEL_CURVA, 100);
       mover(FRENTE, VEL_BASE, 50);
       break;
 
     case NENHUM:
     default:
       // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE_SEM_PARAR, VEL_DEFAULT, 1);
+      mover(FRENTE, VEL_DEFAULT, 5);
       break;
   }
 }
