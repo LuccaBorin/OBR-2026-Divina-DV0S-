@@ -379,14 +379,14 @@ void seguirLinha() {
 
     case CURVA_LEVE_ESQUERDA:
       // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
-      mover(ESQUERDA, VEL_CURVA, 100);
-      mover(FRENTE, VEL_BASE, 35);
+      mover(ESQUERDA, VEL_CURVA, 125);
+      mover(FRENTE, VEL_BASE, 50);
       break;
 
     case CURVA_LEVE_DIREITA:
       // -------- CORREÇÃO SUAVE PARA A DIREITA --------
-      mover(DIREITA, VEL_CURVA, 100);
-      mover(FRENTE, VEL_BASE, 35);
+      mover(DIREITA, VEL_CURVA, 125);
+      mover(FRENTE, VEL_BASE, 50);
       break;
 
     case NENHUM:
