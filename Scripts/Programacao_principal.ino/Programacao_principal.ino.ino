@@ -63,6 +63,7 @@ VespaMotors motors;
 // ENUM: Direcao
 // ======================================================
 enum Direcao {
+  FRENTE_SEM_PARAR,
   FRENTE,    // Ambos os motores para frente
   TRAS,      // Ambos os motores para trás
   DIREITA,   // Giro no próprio eixo para a direita
@@ -201,24 +202,36 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
   if (spd > 100) spd = 100;   // limite superior: máximo 100
 
   switch (direcao) {
+    case FRENTE_SEM_PARAR:
+      motors.forward(spd);
+      delay(tempo);
+      break;
     case FRENTE:
       motors.forward(spd);
+      delay(tempo);
+      motors.stop();
       break;
 
     case TRAS:
       motors.backward(spd);
+      delay(tempo);
+      motors.stop();
       break;
 
     case DIREITA:
       // Motor esquerdo avança + direito recua = giro à direita
       motors.setSpeedLeft(spd);
       motors.setSpeedRight(-spd);
+      delay(tempo);
+      motors.stop();
       break;
 
     case ESQUERDA:
       // Motor direito avança + esquerdo recua = giro à esquerda
       motors.setSpeedLeft(-spd);
       motors.setSpeedRight(spd);
+      delay(tempo);
+      motors.stop();
       break;
 
     case PARAR:
@@ -226,9 +239,6 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
       motors.stop();
       break;
   }
-
-  delay(tempo);
-  motors.stop();
 
   // Atualiza os sensores após o movimento para que o próximo
   // passo de seguirLinha() — ou o while() das curvas —
@@ -384,7 +394,7 @@ void seguirLinha() {
     case NENHUM:
     default:
       // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE, VEL_BASE, 10);
+      mover(FRENTE_SEM_PARAR, VEL_BASE, 10);
       break;
   }
 }
