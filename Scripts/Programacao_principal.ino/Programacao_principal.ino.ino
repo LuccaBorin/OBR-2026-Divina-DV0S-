@@ -318,7 +318,7 @@ void seguirLinha() {
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 475);
+      mover(FRENTE, VEL_BASE, 175);
       break;
 
     case NOVENTA_GRAUS_ESQUERDA:
@@ -327,10 +327,10 @@ void seguirLinha() {
       mover(FRENTE, VEL_BASE, 200);
       if (isSensorPE && isSensorPD) {  // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 275);
+        mover(FRENTE, VEL_BASE, 175);
       }
       mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 275);
+      mover(FRENTE, VEL_BASE, 175);
       mover(PARAR, VEL_BASE, 200);
 
       while (!isSensorCM) {
@@ -347,10 +347,10 @@ void seguirLinha() {
       mover(FRENTE, VEL_BASE, 200);
       if (isSensorPD && isSensorPE) {  // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 275);
+        mover(FRENTE, VEL_BASE, 175);
       }
       mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 275);
+      mover(FRENTE, VEL_BASE, 175);
 
       while (!isSensorCM) {
         mover(DIREITA, VEL_CURVA, 3);
