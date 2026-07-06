@@ -77,7 +77,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
-  VEL_DEFAULT = 40,
+  VEL_DEFAULT = 25,
   VEL_BASE = 65,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
