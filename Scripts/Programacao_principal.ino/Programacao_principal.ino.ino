@@ -326,16 +326,12 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_BASE, 250);
 
-      if (isSensorPE && !isSensorPD && isSensorCM) {
-        // -------- INTERSEÇÃO UMA LINHA SEM COR (mais raro) --------
+      if (isSensorCM) {
+        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 225);
-      } else if (isSensorPE && isSensorPD && isSensorCM) {
-        // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
-        mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 225);
+        mover(FRENTE, VEL_BASE, 175);
       } else {
-        // -------- CURVA 90° "PURA" (mais comum) --------
+        // -------- CURVA 90° "PURA" --------
         mover(PARAR, VEL_BASE, 200);
         mover(FRENTE, VEL_BASE, 175);
         mover(PARAR, VEL_BASE, 200);
@@ -354,16 +350,12 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_BASE, 250);
 
-      if (isSensorPD && !isSensorPE && isSensorCM) {
-        // -------- INTERSEÇÃO UMA LINHA SEM COR (mais raro) --------
+      if (isSensorCM) {
+        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 225);
-      } else if (isSensorPD && isSensorPE && isSensorCM) {
-        // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
-        mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 225);
+        mover(FRENTE, VEL_BASE, 175);
       } else {
-        // -------- CURVA 90° "PURA" (mais comum) --------
+        // -------- CURVA 90° "PURA" --------
         mover(PARAR, VEL_BASE, 200);
         mover(FRENTE, VEL_BASE, 175);
         mover(PARAR, VEL_BASE, 200);
