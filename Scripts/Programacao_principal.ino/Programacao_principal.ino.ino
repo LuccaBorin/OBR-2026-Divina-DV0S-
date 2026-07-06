@@ -77,6 +77,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
+  VEL_DEFAULT = 40,
   VEL_BASE = 65,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
@@ -204,7 +205,6 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
   switch (direcao) {
     case FRENTE_SEM_PARAR:
       motors.forward(spd);
-      delay(tempo);
       break;
     case FRENTE:
       motors.forward(spd);
@@ -394,7 +394,7 @@ void seguirLinha() {
     case NENHUM:
     default:
       // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE_SEM_PARAR, VEL_BASE, 10);
+      mover(FRENTE_SEM_PARAR, VEL_DEFAULT, 1);
       break;
   }
 }
