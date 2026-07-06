@@ -329,11 +329,11 @@ void seguirLinha() {
       if (isSensorPE && !isSensorPD && isSensorCM) {
         // -------- INTERSEÇÃO UMA LINHA SEM COR (mais raro) --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 175);
+        mover(FRENTE, VEL_BASE, 225);
       } else if (isSensorPE && isSensorPD && isSensorCM) {
         // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 175);
+        mover(FRENTE, VEL_BASE, 225);
       } else {
         // -------- CURVA 90° "PURA" (mais comum) --------
         mover(PARAR, VEL_BASE, 200);
@@ -357,11 +357,11 @@ void seguirLinha() {
       if (isSensorPD && !isSensorPE && isSensorCM) {
         // -------- INTERSEÇÃO UMA LINHA SEM COR (mais raro) --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 175);
+        mover(FRENTE, VEL_BASE, 225);
       } else if (isSensorPD && isSensorPE && isSensorCM) {
         // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
         mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 175);
+        mover(FRENTE, VEL_BASE, 225);
       } else {
         // -------- CURVA 90° "PURA" (mais comum) --------
         mover(PARAR, VEL_BASE, 200);
@@ -380,13 +380,13 @@ void seguirLinha() {
     case CURVA_LEVE_ESQUERDA:
       // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
       mover(ESQUERDA, VEL_CURVA, 100);
-      mover(FRENTE, VEL_BASE, 25);
+      mover(FRENTE, VEL_BASE, 35);
       break;
 
     case CURVA_LEVE_DIREITA:
       // -------- CORREÇÃO SUAVE PARA A DIREITA --------
       mover(DIREITA, VEL_CURVA, 100);
-      mover(FRENTE, VEL_BASE, 25);
+      mover(FRENTE, VEL_BASE, 35);
       break;
 
     case NENHUM:
