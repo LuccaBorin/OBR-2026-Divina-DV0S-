@@ -341,7 +341,7 @@ void seguirLinha() {
       mover(ESQUERDA, VEL_CURVA, 3);
     }
 
-    mover(ESQUERDA, VEL_CURVA, 125);
+    mover(ESQUERDA, VEL_CURVA, 150);
   }
 
   break;
@@ -365,7 +365,7 @@ case NOVENTA_GRAUS_DIREITA:
       mover(DIREITA, VEL_CURVA, 3);
     }
 
-    mover(DIREITA, VEL_CURVA, 125);
+    mover(DIREITA, VEL_CURVA, 150);
   }
 
   break;
