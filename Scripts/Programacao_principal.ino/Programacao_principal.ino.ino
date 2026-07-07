@@ -145,8 +145,10 @@ void loop() {
  *
  * QUANDO É CHAMADA:
  *   • No início e no fim de cada ciclo do loop()
- *   • Dentro de mover(), após cada movimento — garante que
- *     isSensorCM esteja atualizado para o while() das curvas
+ *   • Dentro de mover(), continuamente durante o
+ *     movimento — garante que isSensorCM (e os demais)
+ *     estejam sempre atualizados, mesmo enquanto o robô
+ *     ainda está se movendo
  * -------------------------------------------------------
  */
 void lerSensores() {
@@ -190,9 +192,11 @@ void lerSensores() {
  *   tempo     → quanto tempo durar  (milissegundos)
  *                 Ex: 500 = meio segundo
  *
- * ATENÇÃO: usa delay(), que congela o ESP32 durante o
- * movimento. Para um seguidor de linha isso é suficiente,
- * mas impede qualquer outra tarefa simultânea.
+ * NÃO-BLOQUEANTE: em vez de delay(), usa millis() para
+ * cronometrar o movimento. Isso permite que lerSensores()
+ * continue sendo chamada durante o próprio movimento,
+ * mantendo as leituras sempre atualizadas — importante
+ * para os laços while() das curvas de 90° em seguirLinha().
  * -------------------------------------------------------
  */
 void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
@@ -228,7 +232,14 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
       break;
   }
 
-  delay(tempo);
+  // -------- ESPERA NÃO-BLOQUEANTE (substitui delay(tempo)) --------
+  // Em vez de travar a CPU, fica em loop lendo os sensores
+  // continuamente até o tempo definido se esgotar.
+  unsigned long tempoInicio = millis();
+  while ((unsigned long)(millis() - tempoInicio) < (unsigned long)tempo) {
+    lerSensores();
+  }
+
   motors.stop();
 
   // Atualiza os sensores após o movimento para que o próximo
@@ -323,52 +334,52 @@ void seguirLinha() {
       break;
 
     case NOVENTA_GRAUS_ESQUERDA:
-  // -------- CURVA DE 90° PARA A ESQUERDA --------
-  mover(PARAR, VEL_BASE, 200);
-  mover(FRENTE, VEL_BASE, 300);
+      // -------- CURVA DE 90° PARA A ESQUERDA --------
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 300);
 
-  if (isSensorCM) {
-    // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
-    mover(PARAR, VEL_BASE, 500);
-    mover(FRENTE, VEL_BASE, 125);
-  } else {
-    // -------- CURVA 90° "PURA" --------
-    mover(PARAR, VEL_BASE, 2000);
-    mover(FRENTE, VEL_BASE, 50);
-    mover(PARAR, VEL_BASE, 200);
+      if (isSensorCM) {
+        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
+        mover(PARAR, VEL_BASE, 500);
+        mover(FRENTE, VEL_BASE, 125);
+      } else {
+        // -------- CURVA 90° "PURA" --------
+        mover(PARAR, VEL_BASE, 2000);
+        mover(FRENTE, VEL_BASE, 50);
+        mover(PARAR, VEL_BASE, 200);
 
-    while (!isSensorCM) {
-      mover(ESQUERDA, VEL_CURVA, 3);
-    }
+        while (!isSensorCM) {
+          mover(ESQUERDA, VEL_CURVA, 3);
+        }
 
-    mover(ESQUERDA, VEL_CURVA, 150);
-  }
+        mover(ESQUERDA, VEL_CURVA, 150);
+      }
 
-  break;
+      break;
 
-case NOVENTA_GRAUS_DIREITA:
-  // -------- CURVA DE 90° PARA A DIREITA --------
-  mover(PARAR, VEL_BASE, 200);
-  mover(FRENTE, VEL_BASE, 300);
+    case NOVENTA_GRAUS_DIREITA:
+      // -------- CURVA DE 90° PARA A DIREITA --------
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 300);
 
-  if (isSensorCM) {
-    // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
-    mover(PARAR, VEL_BASE, 500);
-    mover(FRENTE, VEL_BASE, 125);
-  } else {
-    // -------- CURVA 90° "PURA" --------
-    mover(PARAR, VEL_BASE, 2000);
-    mover(FRENTE, VEL_BASE, 50);
-    mover(PARAR, VEL_BASE, 200);
+      if (isSensorCM) {
+        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
+        mover(PARAR, VEL_BASE, 500);
+        mover(FRENTE, VEL_BASE, 125);
+      } else {
+        // -------- CURVA 90° "PURA" --------
+        mover(PARAR, VEL_BASE, 2000);
+        mover(FRENTE, VEL_BASE, 50);
+        mover(PARAR, VEL_BASE, 200);
 
-    while (!isSensorCM) {
-      mover(DIREITA, VEL_CURVA, 3);
-    }
+        while (!isSensorCM) {
+          mover(DIREITA, VEL_CURVA, 3);
+        }
 
-    mover(DIREITA, VEL_CURVA, 150);
-  }
+        mover(DIREITA, VEL_CURVA, 150);
+      }
 
-  break;
+      break;
 
     case CURVA_LEVE_ESQUERDA:
       // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
