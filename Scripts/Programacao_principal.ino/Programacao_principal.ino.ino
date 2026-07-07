@@ -334,7 +334,7 @@ void seguirLinha() {
   } else {
     // -------- CURVA 90° "PURA" --------
     mover(PARAR, VEL_BASE, 2000);
-    mover(FRENTE, VEL_BASE, 75);
+    mover(FRENTE, VEL_BASE, 50);
     mover(PARAR, VEL_BASE, 200);
 
     while (!isSensorCM) {
@@ -358,7 +358,7 @@ case NOVENTA_GRAUS_DIREITA:
   } else {
     // -------- CURVA 90° "PURA" --------
     mover(PARAR, VEL_BASE, 2000);
-    mover(FRENTE, VEL_BASE, 75);
+    mover(FRENTE, VEL_BASE, 50);
     mover(PARAR, VEL_BASE, 200);
 
     while (!isSensorCM) {
