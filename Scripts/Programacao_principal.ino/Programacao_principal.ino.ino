@@ -158,6 +158,8 @@ void lerSensores() {
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
+  // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
+  /**/
   Serial.print("PE: ");
   Serial.print(isSensorPE);
   Serial.print(" | CE: ");
@@ -168,6 +170,7 @@ void lerSensores() {
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
   Serial.println(isSensorPD);
+  
 }
 
 /*
@@ -302,6 +305,32 @@ void detectarDesafio() {
       desafioAtual = NENHUM;
     }
   }
+
+  // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
+  /*
+  Serial.print("Desafio detectado: ");
+  switch (desafioAtual) {
+    case INTERSECAO_SEM_MARCACAO:
+      Serial.println("INTERSECAO_SEM_MARCACAO");
+      break;
+    case NOVENTA_GRAUS_ESQUERDA:
+      Serial.println("NOVENTA_GRAUS_ESQUERDA");
+      break;
+    case NOVENTA_GRAUS_DIREITA:
+      Serial.println("NOVENTA_GRAUS_DIREITA");
+      break;
+    case CURVA_LEVE_ESQUERDA:
+      Serial.println("CURVA_LEVE_ESQUERDA");
+      break;
+    case CURVA_LEVE_DIREITA:
+      Serial.println("CURVA_LEVE_DIREITA");
+      break;
+    case NENHUM:
+    default:
+      Serial.println("NENHUM (linha reta)");
+      break;
+  }
+  */
 }
 
 
