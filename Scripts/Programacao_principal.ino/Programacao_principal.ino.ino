@@ -338,7 +338,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_BASE, 300);
 
-      if (isSensorCM) {
+      if (isSensorCM && isSensorPE && isSensorCE) {
         // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
         mover(PARAR, VEL_BASE, 500);
         mover(FRENTE, VEL_BASE, 125);
@@ -362,7 +362,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 200);
       mover(FRENTE, VEL_BASE, 300);
 
-      if (isSensorCM) {
+      if (isSensorCM && isSensorPD && isSensorCD) {
         // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
         mover(PARAR, VEL_BASE, 500);
         mover(FRENTE, VEL_BASE, 125);
