@@ -119,15 +119,6 @@ bool isSensorCD;                // Centro direita  ativo = desvio leve à dir.
 bool isSensorPD;                // Ponta direita   ativo = robô saiu muito à dir.
 Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
 
-// ======================================================
-// VARIÁVEIS GLOBAIS — MPU-6050 (somente giroscópio, ângulo em graus)
-// ======================================================
-float x = 0.0;  // Ângulo acumulado no eixo X (graus)
-float y = 0.0;  // Ângulo acumulado no eixo Y (graus)
-float z = 0.0;  // Ângulo acumulado no eixo Z (graus)
-
-unsigned long tempoAnterior = 0;  // Usado para integrar °/s -> graus
-
 
 // ======================================================
 // PROTÓTIPOS DAS FUNÇÕES — camelCase, verbos no infinitivo
@@ -147,8 +138,14 @@ void setup() {
 
   selectChannel(I2C_CANAL_GIROSCOPIO);
 
+  
   mpu_begin();
-  mpu_calibrate(1000);
+
+  Serial.println("Calibrando, deixa parado!");
+  delay(1000);
+  mpu_calibrate(200);
+  Serial.println("===== Calibrado! =====\n");
+
   mpu_reset();
 }
 
@@ -214,11 +211,8 @@ void lerSensores() {
   // -------- SELECT CHANNEL: giroscópio --------
   selectChannel(I2C_CANAL_GIROSCOPIO);
 
+  // Lê o MPU e atualiza roll/pitch/yaw internamente (biblioteca mpu6050.h)
   mpu_loop();
-
-  x = getAngleX();
-  y = getAngleY();
-  z = getAngleZ();
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /**/
@@ -233,11 +227,11 @@ void lerSensores() {
   Serial.print(" | PD: ");
   Serial.print(isSensorPD);
   Serial.print(" | X: ");
-  Serial.print(x);
+  Serial.print(getAngleX());
   Serial.print(" | Y: ");
-  Serial.print(y);
+  Serial.print(getAngleY());
   Serial.print(" | Z: ");
-  Serial.println(z);
+  Serial.println(getAngleZ());
 }
 
 /*
