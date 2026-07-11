@@ -71,7 +71,7 @@ VespaMotors motors;
 // ======================================================
 // I2C — Canal do multiplexador onde está o giroscópio
 // ======================================================
-#define I2C_CANAL_GIROSCOPIO 1  // Canal do MUX (TCA9548A, 0x70) onde o MPU-6050 está ligado
+#define I2C_CANAL_GIROSCOPIO 0  // Canal do MUX (TCA9548A, 0x70) onde o MPU-6050 está ligado
 
 // ======================================================
 // ENUM: Direcao
