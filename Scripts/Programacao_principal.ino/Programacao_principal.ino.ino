@@ -43,14 +43,12 @@
 // ======================================================
 #include <RoboCore_Vespa.h>
 #include <Wire.h>
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
+#include "mpu6050.h"
 
 // ======================================================
 // OBJETOS
 // ======================================================
 VespaMotors motors;
-Adafruit_MPU6050 SensorGiro;
 
 // ======================================================
 // PINOS — SNAKE_CASE totalmente maiúsculo
@@ -149,8 +147,9 @@ void setup() {
 
   selectChannel(I2C_CANAL_GIROSCOPIO);
 
-  SensorGiro.begin();
-  tempoAnterior = millis();
+  mpu_begin();
+  mpu_calibrate(1000);
+  mpu_reset();
 }
 
 // ======================================================
@@ -215,34 +214,11 @@ void lerSensores() {
   // -------- SELECT CHANNEL: giroscópio --------
   selectChannel(I2C_CANAL_GIROSCOPIO);
 
-  sensors_event_t a, g, temp;
-  SensorGiro.getEvent(&a, &g, &temp);
+  mpu_loop();
 
-  // Calcula delta de tempo desde a última leitura
-  unsigned long agora = millis();
-  float dt = (agora - tempoAnterior) / 1000.0;  // tempo em segundos
-  tempoAnterior = agora;
-
-  // -------- Converte para graus/s e remove o bias calibrado --------
-  float 
-    velX = (g.gyro.x * 57.2958) - offsetX;
-  float velY = (g.gyro.y * 57.2958) - offsetY;
-  float velZ = (g.gyro.z * 57.2958) - offsetZ;
-
-  // -------- Zona-morta: ignora ruído pequeno (robô "parado") --------
-  if (fabs(velX) < GIRO_DEADBAND) velX = 0;
-  if (fabs(velY) < GIRO_DEADBAND) velY = 0;
-  if (fabs(velZ) < GIRO_DEADBAND) velZ = 0;
-
-  // Integra velocidade angular para obter ângulo em graus
-  x += velX * dt;
-  y += velY * dt;
-  z += velZ * dt;
-
-  // -------- Arredonda para número inteiro (sem casas decimais) --------
-  x = roundf(x);
-  y = roundf(y);
-  z = roundf(z);
+  x = getAngleX();
+  y = getAngleY();
+  z = getAngleZ();
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /**/
