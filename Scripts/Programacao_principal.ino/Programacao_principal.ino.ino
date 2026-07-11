@@ -8,6 +8,7 @@
  *   Plataforma  : RoboCore Vespa (ESP32)
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
  *   Motor driver: DRV8837 (via biblioteca VespaMotors)
+ *   IMU         : MPU-6050 (somente giroscópio), via multiplexador I2C (canal 1)
  *
  * Convenções de nomenclatura utilizadas:
  *   #define / pinos  → SNAKE_CASE_MAIUSCULO
@@ -28,6 +29,12 @@
  *   Sensores de centro (CE / CD): indicam desvio leve → correção
  *   suave de trajetória.
  *   Sensor central (CM): referência de alinhamento nas curvas de 90°.
+ *
+ *   O giroscópio (MPU-6050) fornece o ângulo acumulado (em graus)
+ *   nos eixos X, Y e Z, obtido pela integração da velocidade
+ *   angular no tempo. A troca de canal no multiplexador I2C
+ *   (TCA9548A, endereço 0x70) é feita pela função selectChannel(),
+ *   escrevendo direto no registrador de controle, sem biblioteca.
  * ======================================================
  */
 
@@ -35,11 +42,15 @@
 // BIBLIOTECAS
 // ======================================================
 #include <RoboCore_Vespa.h>
+#include <Wire.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
 
 // ======================================================
 // OBJETOS
 // ======================================================
 VespaMotors motors;
+Adafruit_MPU6050 SensorGiro;
 
 // ======================================================
 // PINOS — SNAKE_CASE totalmente maiúsculo
@@ -58,6 +69,11 @@ VespaMotors motors;
 #define PIN_SENSOR_CM 18  // Centro meio     (M)  -- SCK
 #define PIN_SENSOR_CD 5   // Centro direita  (R1) -- SS
 #define PIN_SENSOR_PD 23  // Ponta direita   (R2) -- MOSI
+
+// ======================================================
+// I2C — Canal do multiplexador onde está o giroscópio
+// ======================================================
+#define I2C_CANAL_GIROSCOPIO 1  // Canal do MUX (TCA9548A, 0x70) onde o MPU-6050 está ligado
 
 // ======================================================
 // ENUM: Direcao
@@ -105,6 +121,15 @@ bool isSensorCD;                // Centro direita  ativo = desvio leve à dir.
 bool isSensorPD;                // Ponta direita   ativo = robô saiu muito à dir.
 Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
 
+// ======================================================
+// VARIÁVEIS GLOBAIS — MPU-6050 (somente giroscópio, ângulo em graus)
+// ======================================================
+float x = 0.0;  // Ângulo acumulado no eixo X (graus)
+float y = 0.0;  // Ângulo acumulado no eixo Y (graus)
+float z = 0.0;  // Ângulo acumulado no eixo Z (graus)
+
+unsigned long tempoAnterior = 0;  // Usado para integrar °/s -> graus
+
 
 // ======================================================
 // PROTÓTIPOS DAS FUNÇÕES — camelCase, verbos no infinitivo
@@ -113,12 +138,19 @@ void lerSensores();
 void detectarDesafio();
 void seguirLinha();
 void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo);
+void selectChannel(uint8_t channel);
 
 // ======================================================
 // SETUP
 // ======================================================
 void setup() {
   Serial.begin(115200);
+  Wire.begin();
+
+  selectChannel(I2C_CANAL_GIROSCOPIO);
+
+  SensorGiro.begin();
+  tempoAnterior = millis();
 }
 
 // ======================================================
@@ -136,10 +168,32 @@ void loop() {
 // ======================================================
 
 /*
+ * selectChannel(channel)
+ * -------------------------------------------------------
+ * O QUE FAZ : Seleciona o canal ativo no multiplexador I2C
+ *             (TCA9548A, endereço 0x70), escrevendo direto
+ *             no seu registrador de controle.
+ *
+ * PARÂMETROS:
+ *   channel → número do canal (0 a 7)
+ * -------------------------------------------------------
+ */
+void selectChannel(uint8_t channel) {
+  Wire.beginTransmission(0x70);
+  Wire.write(1 << channel);
+  Wire.endTransmission();
+}
+
+/*
  * lerSensores()
  * -------------------------------------------------------
  * O QUE FAZ : Lê os 5 sensores infravermelhos e armazena
  *             o resultado nas variáveis globais isSensor_.
+ *             Também troca para o canal do giroscópio no
+ *             multiplexador I2C (selectChannel) e lê o
+ *             MPU-6050, integrando a velocidade angular no
+ *             tempo para obter o ângulo acumulado (em graus)
+ *             nos eixos X, Y, Z.
  *             Também imprime os valores no Monitor Serial
  *             para facilitar a depuração.
  *
@@ -158,6 +212,38 @@ void lerSensores() {
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
+  // -------- SELECT CHANNEL: giroscópio --------
+  selectChannel(I2C_CANAL_GIROSCOPIO);
+
+  sensors_event_t a, g, temp;
+  SensorGiro.getEvent(&a, &g, &temp);
+
+  // Calcula delta de tempo desde a última leitura
+  unsigned long agora = millis();
+  float dt = (agora - tempoAnterior) / 1000.0;  // tempo em segundos
+  tempoAnterior = agora;
+
+  // -------- Converte para graus/s e remove o bias calibrado --------
+  float 
+    velX = (g.gyro.x * 57.2958) - offsetX;
+  float velY = (g.gyro.y * 57.2958) - offsetY;
+  float velZ = (g.gyro.z * 57.2958) - offsetZ;
+
+  // -------- Zona-morta: ignora ruído pequeno (robô "parado") --------
+  if (fabs(velX) < GIRO_DEADBAND) velX = 0;
+  if (fabs(velY) < GIRO_DEADBAND) velY = 0;
+  if (fabs(velZ) < GIRO_DEADBAND) velZ = 0;
+
+  // Integra velocidade angular para obter ângulo em graus
+  x += velX * dt;
+  y += velY * dt;
+  z += velZ * dt;
+
+  // -------- Arredonda para número inteiro (sem casas decimais) --------
+  x = roundf(x);
+  y = roundf(y);
+  z = roundf(z);
+
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /**/
   Serial.print("PE: ");
@@ -169,8 +255,13 @@ void lerSensores() {
   Serial.print(" | CD: ");
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
-  Serial.println(isSensorPD);
-  
+  Serial.print(isSensorPD);
+  Serial.print(" | X: ");
+  Serial.print(x);
+  Serial.print(" | Y: ");
+  Serial.print(y);
+  Serial.print(" | Z: ");
+  Serial.println(z);
 }
 
 /*
