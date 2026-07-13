@@ -136,7 +136,7 @@ void selectChannel(uint8_t channel);
 // ======================================================
 void setup() {
   Serial.begin(115200);
-  Wire.begin(21,22);
+  Wire.begin();
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA);
@@ -145,6 +145,10 @@ void setup() {
   } else {
     Serial.println("===== Sensor de distancia iniciado! =====\n");
   }
+
+  // -------- Liga o modo contínuo: o sensor mede sozinho em segundo   --------
+  // -------- plano, sem travar o código esperando cada medição.       --------
+  sensorDistancia.startRangeContinuous();
 }
 
 // ======================================================
@@ -185,8 +189,10 @@ void selectChannel(uint8_t channel) {
  *             o resultado nas variáveis globais isSensor_.
  *             Também troca para o canal do sensor de distância
  *             no multiplexador I2C (selectChannel) e lê o
- *             VL53L0X, armazenando a distância (em cm) até o
- *             obstáculo mais próximo em distanciaCM.
+ *             VL53L0X (modo contínuo, não-bloqueante) e, quando
+ *             há uma medição nova pronta, atualiza distanciaCM
+ *             (em cm). Se não houver medição nova, mantém o
+ *             último valor lido.
  *             Também imprime os valores no Monitor Serial
  *             para facilitar a depuração.
  *
@@ -208,17 +214,16 @@ void lerSensores() {
   // -------- SELECT CHANNEL: sensor de distância --------
   selectChannel(I2C_CANAL_DISTANCIA);
 
-  VL53L0X_RangingMeasurementData_t medida;
-  sensorDistancia.rangingTest(&medida, false);
-
-  if (medida.RangeStatus != 4) {  // 4 = fora de alcance / leitura inválida
-    distanciaCM = medida.RangeMilliMeter / 10.0;
-  } else {
-    distanciaCM = -1;  // leitura inválida
+  // -------- LEITURA NÃO-BLOQUEANTE --------
+  // Só atualiza distanciaCM se o sensor já tiver uma medição nova
+  // pronta (modo contínuo). Caso contrário, mantém o último valor
+  // lido — não trava esperando o sensor.
+  if (sensorDistancia.isRangeComplete()) {
+    distanciaCM = sensorDistancia.readRange() / 10.0;
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /*
+  /**/
   Serial.print("PE: ");
   Serial.print(isSensorPE);
   Serial.print(" | CE: ");
@@ -230,7 +235,7 @@ void lerSensores() {
   Serial.print(" | PD: ");
   Serial.print(isSensorPD);
   Serial.print(" | Distancia (cm): ");
-  Serial.println(distanciaCM);*/
+  Serial.println(distanciaCM);
 }
 
 /*
@@ -437,7 +442,7 @@ void seguirLinha() {
         mover(FRENTE, VEL_BASE, 50);
         mover(PARAR, VEL_BASE, 200);
 
-        while (!isSensorCD) {
+        while (!isSensorCM) {
           mover(ESQUERDA, VEL_CURVA, 3);
         }
 
@@ -461,7 +466,7 @@ void seguirLinha() {
         mover(FRENTE, VEL_BASE, 50);
         mover(PARAR, VEL_BASE, 200);
 
-        while (!isSensorCE) {
+        while (!isSensorCM) {
           mover(DIREITA, VEL_CURVA, 3);
         }
 
