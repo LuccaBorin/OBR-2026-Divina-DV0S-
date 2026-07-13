@@ -8,7 +8,7 @@
  *   Plataforma  : RoboCore Vespa (ESP32)
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
  *   Motor driver: DRV8837 (via biblioteca VespaMotors)
- *   IMU         : MPU-6050 (somente giroscópio), via multiplexador I2C (canal 1)
+ *   Distância   : VL53L0X (sensor a laser), via multiplexador I2C (canal 0)
  *
  * Convenções de nomenclatura utilizadas:
  *   #define / pinos  → SNAKE_CASE_MAIUSCULO
@@ -30,11 +30,11 @@
  *   suave de trajetória.
  *   Sensor central (CM): referência de alinhamento nas curvas de 90°.
  *
- *   O giroscópio (MPU-6050) fornece o ângulo acumulado (em graus)
- *   nos eixos X, Y e Z, obtido pela integração da velocidade
- *   angular no tempo. A troca de canal no multiplexador I2C
- *   (TCA9548A, endereço 0x70) é feita pela função selectChannel(),
- *   escrevendo direto no registrador de controle, sem biblioteca.
+ *   O sensor de distância (VL53L0X) fornece a distância (em mm)
+ *   até o obstáculo mais próximo à frente do robô. A troca de
+ *   canal no multiplexador I2C (TCA9548A, endereço 0x70) é feita
+ *   pela função selectChannel(), escrevendo direto no registrador
+ *   de controle, sem biblioteca.
  * ======================================================
  */
 
@@ -43,12 +43,13 @@
 // ======================================================
 #include <RoboCore_Vespa.h>
 #include <Wire.h>
-#include "mpu6050.h"
+#include <Adafruit_VL53L0X.h>
 
 // ======================================================
 // OBJETOS
 // ======================================================
 VespaMotors motors;
+Adafruit_VL53L0X sensorDistancia = Adafruit_VL53L0X();
 
 // ======================================================
 // PINOS — SNAKE_CASE totalmente maiúsculo
@@ -69,9 +70,9 @@ VespaMotors motors;
 #define PIN_SENSOR_PD 23  // Ponta direita   (R2) -- MOSI
 
 // ======================================================
-// I2C — Canal do multiplexador onde está o giroscópio
+// I2C — Canal do multiplexador onde está o sensor de distância
 // ======================================================
-#define I2C_CANAL_GIROSCOPIO 0  // Canal do MUX (TCA9548A, 0x70) onde o MPU-6050 está ligado
+#define I2C_CANAL_DISTANCIA 0  // Canal do MUX (TCA9548A, 0x70) onde o VL53L0X está ligado
 
 // ======================================================
 // ENUM: Direcao
@@ -117,6 +118,7 @@ bool isSensorCE;                // Centro esquerda ativo = desvio leve à esq.
 bool isSensorCM;                // Centro meio     ativo = robô centralizado
 bool isSensorCD;                // Centro direita  ativo = desvio leve à dir.
 bool isSensorPD;                // Ponta direita   ativo = robô saiu muito à dir.
+int distanciaCM;              // Última distância lida pelo VL53L0X (em cm)
 Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
 
 
@@ -134,19 +136,15 @@ void selectChannel(uint8_t channel);
 // ======================================================
 void setup() {
   Serial.begin(115200);
-  Wire.begin();
+  Wire.begin(21,22);
 
-  selectChannel(I2C_CANAL_GIROSCOPIO);
-
-  
-  mpu_begin();
-
-  Serial.println("Calibrando, deixa parado!");
-  delay(1000);
-  mpu_calibrate(200);
-  Serial.println("===== Calibrado! =====\n");
-
-  mpu_reset();
+  // -------- Inicializa o sensor de distância no canal 0 do MUX --------
+  selectChannel(I2C_CANAL_DISTANCIA);
+  if (!sensorDistancia.begin()) {
+    Serial.println("Falha ao iniciar o sensor de distancia VL53L0X!");
+  } else {
+    Serial.println("===== Sensor de distancia iniciado! =====\n");
+  }
 }
 
 // ======================================================
@@ -185,11 +183,10 @@ void selectChannel(uint8_t channel) {
  * -------------------------------------------------------
  * O QUE FAZ : Lê os 5 sensores infravermelhos e armazena
  *             o resultado nas variáveis globais isSensor_.
- *             Também troca para o canal do giroscópio no
- *             multiplexador I2C (selectChannel) e lê o
- *             MPU-6050, integrando a velocidade angular no
- *             tempo para obter o ângulo acumulado (em graus)
- *             nos eixos X, Y, Z.
+ *             Também troca para o canal do sensor de distância
+ *             no multiplexador I2C (selectChannel) e lê o
+ *             VL53L0X, armazenando a distância (em cm) até o
+ *             obstáculo mais próximo em distanciaCM.
  *             Também imprime os valores no Monitor Serial
  *             para facilitar a depuração.
  *
@@ -208,14 +205,20 @@ void lerSensores() {
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
-  // -------- SELECT CHANNEL: giroscópio --------
-  selectChannel(I2C_CANAL_GIROSCOPIO);
+  // -------- SELECT CHANNEL: sensor de distância --------
+  selectChannel(I2C_CANAL_DISTANCIA);
 
-  // Lê o MPU e atualiza roll/pitch/yaw internamente (biblioteca mpu6050.h)
-  mpu_loop();
+  VL53L0X_RangingMeasurementData_t medida;
+  sensorDistancia.rangingTest(&medida, false);
+
+  if (medida.RangeStatus != 4) {  // 4 = fora de alcance / leitura inválida
+    distanciaCM = medida.RangeMilliMeter / 10.0;
+  } else {
+    distanciaCM = -1;  // leitura inválida
+  }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /**/
+  /*
   Serial.print("PE: ");
   Serial.print(isSensorPE);
   Serial.print(" | CE: ");
@@ -226,12 +229,8 @@ void lerSensores() {
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
   Serial.print(isSensorPD);
-  Serial.print(" | X: ");
-  Serial.print(getAngleX());
-  Serial.print(" | Y: ");
-  Serial.print(getAngleY());
-  Serial.print(" | Z: ");
-  Serial.println(getAngleZ());
+  Serial.print(" | Distancia (cm): ");
+  Serial.println(distanciaCM);*/
 }
 
 /*
@@ -438,7 +437,7 @@ void seguirLinha() {
         mover(FRENTE, VEL_BASE, 50);
         mover(PARAR, VEL_BASE, 200);
 
-        while (!isSensorCM) {
+        while (!isSensorCD) {
           mover(ESQUERDA, VEL_CURVA, 3);
         }
 
@@ -462,7 +461,7 @@ void seguirLinha() {
         mover(FRENTE, VEL_BASE, 50);
         mover(PARAR, VEL_BASE, 200);
 
-        while (!isSensorCM) {
+        while (!isSensorCE) {
           mover(DIREITA, VEL_CURVA, 3);
         }
 
