@@ -102,6 +102,7 @@ enum PerfilVelocidade {
 // ENUM: Desafio
 // ======================================================
 enum Desafio {
+  OBSTACULO,                // Obstaculo
   INTERSECAO_SEM_MARCACAO,  // Interseções sem marcaçoes
   NOVENTA_GRAUS_ESQUERDA,   // Curva de 90 graus para esquerda
   NOVENTA_GRAUS_DIREITA,    // Curva de 90 graus para direita
@@ -118,7 +119,7 @@ bool isSensorCE;                // Centro esquerda ativo = desvio leve à esq.
 bool isSensorCM;                // Centro meio     ativo = robô centralizado
 bool isSensorCD;                // Centro direita  ativo = desvio leve à dir.
 bool isSensorPD;                // Ponta direita   ativo = robô saiu muito à dir.
-int distanciaCM;              // Última distância lida pelo VL53L0X (em cm)
+int distanciaCM;                // Última distância lida pelo VL53L0X (em cm)
 Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
 
 
@@ -345,7 +346,10 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
+  if (distanciaCM == 4) {
+    // -------- OBSTACULO --------
+    desafioAtual = OBSTSACULO;
+  } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       desafioAtual = INTERSECAO_SEM_MARCACAO;
@@ -421,6 +425,11 @@ void seguirLinha() {
 
   switch (desafioAtual) {
 
+    case OBSTACULO:
+      // -------- OBSTACULO --------
+      mover(PARAR, VEL_BASE, 1000);
+      mover(ESQUERDA, VEL_CURVA, 1700);
+      break;
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       mover(PARAR, VEL_BASE, 500);
