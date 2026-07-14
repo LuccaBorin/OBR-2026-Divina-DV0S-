@@ -346,9 +346,9 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (distanciaCM == 4) {
+  if (distanciaCM <= 10) {
     // -------- OBSTACULO --------
-    desafioAtual = OBSTSACULO;
+    desafioAtual = OBSTACULO;
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
