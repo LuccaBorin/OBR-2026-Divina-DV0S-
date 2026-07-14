@@ -346,7 +346,7 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (distanciaCM <= 10) {
+  if (distanciaCM == 10) {
     // -------- OBSTACULO --------
     desafioAtual = OBSTACULO;
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
@@ -428,7 +428,22 @@ void seguirLinha() {
     case OBSTACULO:
       // -------- OBSTACULO --------
       mover(PARAR, VEL_BASE, 1000);
-      mover(ESQUERDA, VEL_CURVA, 1700);
+      mover(ESQUERDA, VEL_CURVA, 2000);
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 1975);
+      mover(PARAR, VEL_BASE, 1000);
+      mover(DIREITA, VEL_CURVA, 2650);
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 4525);
+      mover(PARAR, VEL_BASE, 1000);
+      mover(DIREITA, VEL_CURVA, 2650);
+      mover(PARAR, VEL_BASE, 1000);
+      while (!isSensorCM) {
+        mover(FRENTE, VEL_DEFAULT, 5);
+      }
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 475);
+      mover(PARAR, VEL_BASE, 5000);
       break;
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
