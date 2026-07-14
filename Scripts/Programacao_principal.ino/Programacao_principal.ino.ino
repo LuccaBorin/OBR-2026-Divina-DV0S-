@@ -434,7 +434,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 1000);
       mover(DIREITA, VEL_CURVA, 2650);
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 4525);
+      mover(FRENTE, VEL_BASE, 4500);
       mover(PARAR, VEL_BASE, 1000);
       mover(DIREITA, VEL_CURVA, 2650);
       mover(PARAR, VEL_BASE, 1000);
