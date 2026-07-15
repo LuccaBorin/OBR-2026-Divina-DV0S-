@@ -8,7 +8,9 @@
  *   Plataforma  : RoboCore Vespa (ESP32)
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
  *   Motor driver: DRV8837 (via biblioteca VespaMotors)
- *   Distância   : VL53L0X (sensor a laser), via multiplexador I2C (canal 0)
+ *   Distância   : 2 x VL53L0X (sensor a laser), via multiplexador I2C
+ *                   - distanciaC → canal 0 do MUX (sensor de frente/curto alcance / "Central")
+ *                   - distanciaL → canal 2 do MUX (sensor "Lateral"/segundo sensor)
  *
  * Convenções de nomenclatura utilizadas:
  *   #define / pinos  → SNAKE_CASE_MAIUSCULO
@@ -30,11 +32,20 @@
  *   suave de trajetória.
  *   Sensor central (CM): referência de alinhamento nas curvas de 90°.
  *
- *   O sensor de distância (VL53L0X) fornece a distância (em mm)
+ *   Os sensores de distância (VL53L0X) fornecem a distância (em cm)
  *   até o obstáculo mais próximo à frente do robô. A troca de
  *   canal no multiplexador I2C (TCA9548A, endereço 0x70) é feita
  *   pela função selectChannel(), escrevendo direto no registrador
  *   de controle, sem biblioteca.
+ *
+ *   FILTRO DE RUÍDO (leia com atenção):
+ *   O VL53L0X, de vez em quando, devolve uma leitura baixa
+ *   espúria (ruído óptico, reflexo, etc.) mesmo sem nada na
+ *   frente. Por isso NÃO confiamos em uma leitura isolada.
+ *   Cada leitura só é aceita se o rangeStatus indicar medição
+ *   válida, e só disparamos "obstáculo" depois de várias
+ *   leituras consecutivas abaixo do limiar (debounce), definido
+ *   em LIMIAR_OBSTACULO_CM / LEITURAS_CONSECUTIVAS_OBSTACULO.
  * ======================================================
  */
 
@@ -49,7 +60,8 @@
 // OBJETOS
 // ======================================================
 VespaMotors motors;
-Adafruit_VL53L0X sensorDistancia = Adafruit_VL53L0X();
+Adafruit_VL53L0X sensorDistanciaC = Adafruit_VL53L0X();  // canal 0 do MUX
+Adafruit_VL53L0X sensorDistanciaL = Adafruit_VL53L0X();  // canal 2 do MUX
 
 // ======================================================
 // PINOS — SNAKE_CASE totalmente maiúsculo
@@ -70,9 +82,16 @@ Adafruit_VL53L0X sensorDistancia = Adafruit_VL53L0X();
 #define PIN_SENSOR_PD 23  // Ponta direita   (R2) -- MOSI
 
 // ======================================================
-// I2C — Canal do multiplexador onde está o sensor de distância
+// I2C — Canais do multiplexador onde estão os sensores de distância
 // ======================================================
-#define I2C_CANAL_DISTANCIA 0  // Canal do MUX (TCA9548A, 0x70) onde o VL53L0X está ligado
+#define I2C_CANAL_DISTANCIA_C 0  // Canal do MUX (TCA9548A, 0x70) onde o VL53L0X "C" está ligado
+#define I2C_CANAL_DISTANCIA_L 2  // Canal do MUX (TCA9548A, 0x70) onde o VL53L0X "L" está ligado
+
+// ======================================================
+// FILTRO DE OBSTÁCULO — evita falso positivo por ruído do sensor
+// ======================================================
+#define LIMIAR_OBSTACULO_CM 10          // Distância (cm) considerada "obstáculo à frente"
+#define LEITURAS_CONSECUTIVAS_OBSTACULO 4  // Nº de leituras seguidas abaixo do limiar p/ confirmar
 
 // ======================================================
 // ENUM: Direcao
@@ -119,7 +138,9 @@ bool isSensorCE;                // Centro esquerda ativo = desvio leve à esq.
 bool isSensorCM;                // Centro meio     ativo = robô centralizado
 bool isSensorCD;                // Centro direita  ativo = desvio leve à dir.
 bool isSensorPD;                // Ponta direita   ativo = robô saiu muito à dir.
-int distanciaCM;                // Última distância lida pelo VL53L0X (em cm)
+int distanciaC;                 // Última distância válida lida pelo VL53L0X "C" (canal 0, em cm)
+int distanciaL;                 // Última distância válida lida pelo VL53L0X "L" (canal 2, em cm)
+int contadorObstaculo = 0;      // Nº de leituras consecutivas de distanciaC abaixo do limiar
 Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
 
 
@@ -139,17 +160,23 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
 
-  // -------- Inicializa o sensor de distância no canal 0 do MUX --------
-  selectChannel(I2C_CANAL_DISTANCIA);
-  if (!sensorDistancia.begin()) {
-    Serial.println("Falha ao iniciar o sensor de distancia VL53L0X!");
+  // -------- Inicializa o sensor de distância "C" no canal 0 do MUX --------
+  selectChannel(I2C_CANAL_DISTANCIA_C);
+  if (!sensorDistanciaC.begin()) {
+    Serial.println("Falha ao iniciar o sensor de distancia C (VL53L0X)!");
   } else {
-    Serial.println("===== Sensor de distancia iniciado! =====\n");
+    Serial.println("===== Sensor de distancia C iniciado! =====");
+    sensorDistanciaC.startRangeContinuous();
   }
 
-  // -------- Liga o modo contínuo: o sensor mede sozinho em segundo   --------
-  // -------- plano, sem travar o código esperando cada medição.       --------
-  sensorDistancia.startRangeContinuous();
+  // -------- Inicializa o sensor de distância "L" no canal 2 do MUX --------
+  selectChannel(I2C_CANAL_DISTANCIA_L);
+  if (!sensorDistanciaL.begin()) {
+    Serial.println("Falha ao iniciar o sensor de distancia L (VL53L0X)!");
+  } else {
+    Serial.println("===== Sensor de distancia L iniciado! =====\n");
+    sensorDistanciaL.startRangeContinuous();
+  }
 }
 
 // ======================================================
@@ -188,12 +215,15 @@ void selectChannel(uint8_t channel) {
  * -------------------------------------------------------
  * O QUE FAZ : Lê os 5 sensores infravermelhos e armazena
  *             o resultado nas variáveis globais isSensor_.
- *             Também troca para o canal do sensor de distância
- *             no multiplexador I2C (selectChannel) e lê o
- *             VL53L0X (modo contínuo, não-bloqueante) e, quando
- *             há uma medição nova pronta, atualiza distanciaCM
- *             (em cm). Se não houver medição nova, mantém o
- *             último valor lido.
+ *             Também lê, aqui mesmo, os dois sensores de
+ *             distância (distanciaC no canal 0, distanciaL
+ *             no canal 2): seleciona o canal do MUX, checa
+ *             se há medição nova pronta (modo contínuo,
+ *             não-bloqueante) e só atualiza a variável se o
+ *             rangeStatus indicar leitura válida (== 0).
+ *             Leituras com erro (fora de alcance, sinal
+ *             fraco, ruído, etc.) são descartadas e o
+ *             último valor bom é mantido.
  *             Também imprime os valores no Monitor Serial
  *             para facilitar a depuração.
  *
@@ -212,15 +242,30 @@ void lerSensores() {
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
-  // -------- SELECT CHANNEL: sensor de distância --------
-  selectChannel(I2C_CANAL_DISTANCIA);
+  // -------- SENSOR DE DISTÂNCIA "C" (canal 0 do MUX) --------
+  selectChannel(I2C_CANAL_DISTANCIA_C);
+  if (sensorDistanciaC.isRangeComplete()) {
+    uint16_t leituraMmC = sensorDistanciaC.readRange();
+    uint8_t statusC = sensorDistanciaC.readRangeStatus();
 
-  // -------- LEITURA NÃO-BLOQUEANTE --------
-  // Só atualiza distanciaCM se o sensor já tiver uma medição nova
-  // pronta (modo contínuo). Caso contrário, mantém o último valor
-  // lido — não trava esperando o sensor.
-  if (sensorDistancia.isRangeComplete()) {
-    distanciaCM = sensorDistancia.readRange() / 10.0;
+    // status 0 = leitura válida (sem erro reportado pelo sensor)
+    if (statusC == 0) {
+      distanciaC = leituraMmC / 10;
+    }
+    // se statusC != 0, ignora essa leitura (mantém o último valor bom)
+  }
+
+  // -------- SENSOR DE DISTÂNCIA "L" (canal 2 do MUX) --------
+  selectChannel(I2C_CANAL_DISTANCIA_L);
+  if (sensorDistanciaL.isRangeComplete()) {
+    uint16_t leituraMmL = sensorDistanciaL.readRange();
+    uint8_t statusL = sensorDistanciaL.readRangeStatus();
+
+    // status 0 = leitura válida (sem erro reportado pelo sensor)
+    if (statusL == 0) {
+      distanciaL = leituraMmL / 10;
+    }
+    // se statusL != 0, ignora essa leitura (mantém o último valor bom)
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
@@ -235,8 +280,10 @@ void lerSensores() {
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
   Serial.print(isSensorPD);
-  Serial.print(" | Distancia (cm): ");
-  Serial.println(distanciaCM);
+  Serial.print(" | DistC (cm): ");
+  Serial.print(distanciaC);
+  Serial.print(" | DistL (cm): ");
+  Serial.println(distanciaL);
 }
 
 /*
@@ -324,16 +371,26 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  *             situação o robô está enfrentando,
  *             armazenando o resultado em desafioAtual.
  *
+ * FILTRO DE OBSTÁCULO (debounce):
+ *   Em vez de disparar OBSTACULO assim que distanciaC <=
+ *   LIMIAR_OBSTACULO_CM, contamos quantas vezes SEGUIDAS
+ *   isso aconteceu (contadorObstaculo). Só quando o contador
+ *   atinge LEITURAS_CONSECUTIVAS_OBSTACULO é que confirmamos
+ *   o obstáculo de verdade. Qualquer leitura acima do limiar
+ *   zera o contador — um pico de ruído isolado não passa.
+ *
  * PRIORIDADE DAS DECISÕES:
- *   1. isSensorPE ativo → curva de 90° à esquerda
+ *   1. Obstáculo confirmado (distanciaC filtrada) → OBSTACULO
  *
- *   2. isSensorPD ativo → curva de 90° à direita
+ *   2. isSensorPE ativo → curva de 90° à esquerda
  *
- *   3. isSensorCE ativo → correção suave à esquerda
+ *   3. isSensorPD ativo → curva de 90° à direita
  *
- *   4. isSensorCD ativo → correção suave à direita
+ *   4. isSensorCE ativo → correção suave à esquerda
  *
- *   5. Nenhum dos casos acima
+ *   5. isSensorCD ativo → correção suave à direita
+ *
+ *   6. Nenhum dos casos acima
  *      → segue em frente (NENHUM)
  *
  * POR QUE ESTA FUNÇÃO EXISTE:
@@ -346,8 +403,15 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (distanciaCM == 10) {
-    // -------- OBSTACULO --------
+  // -------- FILTRO/DEBOUNCE DO OBSTÁCULO --------
+  if (distanciaC > 0 && distanciaC <= LIMIAR_OBSTACULO_CM) {
+    contadorObstaculo++;
+  } else {
+    contadorObstaculo = 0;
+  }
+
+  if (contadorObstaculo >= LEITURAS_CONSECUTIVAS_OBSTACULO) {
+    // -------- OBSTACULO CONFIRMADO (várias leituras seguidas) --------
     desafioAtual = OBSTACULO;
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
@@ -427,6 +491,7 @@ void seguirLinha() {
 
     case OBSTACULO:
       // -------- OBSTACULO --------
+      contadorObstaculo = 0;  // zera o debounce para não re-disparar em seguida
       mover(PARAR, VEL_BASE, 1000);
       mover(ESQUERDA, VEL_CURVA, 2000);
       mover(PARAR, VEL_BASE, 1000);
