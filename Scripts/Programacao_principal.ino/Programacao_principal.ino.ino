@@ -433,11 +433,9 @@ void seguirLinha() {
         lerSensores();
         mover(DIREITA, VEL_CURVA, 3);
       }
+      mover(DIREITA, VEL_CURVA, 100);
       mover(PARAR, VEL_BASE, 1000);
-      while (intDistanciaL < 25) {
-        lerSensores();
-        mover(FRENTE, VEL_DEFAULT, 3);
-      }
+      mover(FRENTE, VEL_BASE, 3000);
       mover(PARAR, VEL_BASE, 1000);
       break;
     case INTERSECAO_SEM_MARCACAO:
