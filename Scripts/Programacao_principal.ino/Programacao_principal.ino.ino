@@ -430,7 +430,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 1000);
       mover(TRAS, VEL_DEFAULT, 150);
       mover(DIREITA, VEL_CURVA, 200);
-      while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {
+      while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {//adicionar redundancia ao while, ou filtro a leitura 
         lerSensores();
         mover(DIREITA, VEL_CURVA, 3);
       }
