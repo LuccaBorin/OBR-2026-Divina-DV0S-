@@ -90,7 +90,6 @@ Adafruit_VL53L0X sensorDistanciaL = Adafruit_VL53L0X();  // canal 2 do MUX
 // ======================================================
 // FILTRO DE OBSTÁCULO — evita falso positivo por ruído do sensor
 // ======================================================
-#define LIMIAR_OBSTACULO_CM 10          // Distância (cm) considerada "obstáculo à frente"
 #define LEITURAS_CONSECUTIVAS_OBSTACULO 4  // Nº de leituras seguidas abaixo do limiar p/ confirmar
 
 // ======================================================
@@ -249,7 +248,7 @@ void lerSensores() {
     uint8_t statusC = sensorDistanciaC.readRangeStatus();
 
     // status 0 = leitura válida (sem erro reportado pelo sensor)
-    if (statusC == 0) {
+    if (statusC == 0 || statusC == 4) {
       distanciaC = leituraMmC / 10;
     }
     // se statusC != 0, ignora essa leitura (mantém o último valor bom)
@@ -404,7 +403,7 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   // -------- FILTRO/DEBOUNCE DO OBSTÁCULO --------
-  if (distanciaC > 0 && distanciaC <= LIMIAR_OBSTACULO_CM) {
+  if (distanciaC > 0 && distanciaC <= 10) {
     contadorObstaculo++;
   } else {
     contadorObstaculo = 0;
