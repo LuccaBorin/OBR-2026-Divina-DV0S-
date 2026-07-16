@@ -429,7 +429,7 @@ void seguirLinha() {
       // -------- OBSTACULO --------
       mover(PARAR, VEL_BASE, 1000);
       mover(DIREITA, VEL_CURVA, 200);
-      while (intDistanciaL != 15) {
+      while ((intDistanciaL < 15) && (intDistanciaL > 10)) {
         lerSensores();
         mover(DIREITA, VEL_CURVA, 3);
       }
