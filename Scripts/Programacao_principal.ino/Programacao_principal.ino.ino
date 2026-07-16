@@ -243,29 +243,11 @@ void lerSensores() {
 
   // -------- SENSOR DE DISTÂNCIA "C" (canal 0 do MUX) --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
-  if (sensorDistanciaC.isRangeComplete()) {
-    uint16_t leituraMmC = sensorDistanciaC.readRange();
-    uint8_t statusC = sensorDistanciaC.readRangeStatus();
-
-    // status 0 = leitura válida (sem erro reportado pelo sensor)
-    if (statusC == 0 || statusC == 4) {
-      distanciaC = leituraMmC / 10;
-    }
-    // se statusC != 0, ignora essa leitura (mantém o último valor bom)
-  }
+  distanciaC = sensorDistanciaC.readRange() / 10;
 
   // -------- SENSOR DE DISTÂNCIA "L" (canal 2 do MUX) --------
   selectChannel(I2C_CANAL_DISTANCIA_L);
-  if (sensorDistanciaL.isRangeComplete()) {
-    uint16_t leituraMmL = sensorDistanciaL.readRange();
-    uint8_t statusL = sensorDistanciaL.readRangeStatus();
-
-    // status 0 = leitura válida (sem erro reportado pelo sensor)
-    if (statusL == 0) {
-      distanciaL = leituraMmL / 10;
-    }
-    // se statusL != 0, ignora essa leitura (mantém o último valor bom)
-  }
+  distanciaL = sensorDistanciaL.readRange() / 10;
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /**/
@@ -491,23 +473,9 @@ void seguirLinha() {
     case OBSTACULO:
       // -------- OBSTACULO --------
       contadorObstaculo = 0;  // zera o debounce para não re-disparar em seguida
-      mover(PARAR, VEL_BASE, 1000);
-      mover(ESQUERDA, VEL_CURVA, 2000);
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 1975);
-      mover(PARAR, VEL_BASE, 1000);
-      mover(DIREITA, VEL_CURVA, 2650);
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 4500);
-      mover(PARAR, VEL_BASE, 1000);
-      mover(DIREITA, VEL_CURVA, 2650);
-      mover(PARAR, VEL_BASE, 1000);
-      while (!isSensorCM) {
-        mover(FRENTE, VEL_DEFAULT, 5);
+      while (distanciaL != 6) {
+        mover(DIREITA, VEL_CURVA, 3);
       }
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 475);
-      mover(PARAR, VEL_BASE, 5000);
       break;
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
