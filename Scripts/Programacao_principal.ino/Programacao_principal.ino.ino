@@ -161,21 +161,11 @@ void setup() {
 
   // -------- Inicializa o sensor de distância "C" no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
-  if (!sensorDistanciaC.begin()) {
-    Serial.println("Falha ao iniciar o sensor de distancia C (VL53L0X)!");
-  } else {
-    Serial.println("===== Sensor de distancia C iniciado! =====");
-    sensorDistanciaC.startRangeContinuous();
-  }
+  sensorDistanciaC.startRangeContinuous();
 
   // -------- Inicializa o sensor de distância "L" no canal 2 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_L);
-  if (!sensorDistanciaL.begin()) {
-    Serial.println("Falha ao iniciar o sensor de distancia L (VL53L0X)!");
-  } else {
-    Serial.println("===== Sensor de distancia L iniciado! =====\n");
-    sensorDistanciaL.startRangeContinuous();
-  }
+  sensorDistanciaL.startRangeContinuous();
 }
 
 // ======================================================
