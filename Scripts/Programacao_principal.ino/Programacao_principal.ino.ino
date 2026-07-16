@@ -139,7 +139,8 @@ void selectChannel(uint8_t channel);
 // SETUP
 // ======================================================
 void setup() {
-  Serial.begin(115200);
+  // -------- DEBUG: liga o Monitor Serial -------
+  //Serial.begin(115200);
   Wire.begin();
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
@@ -218,7 +219,7 @@ void lerSensores() {
   intDistanciaL = distanciaL.readRange() / 10.0;
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /**/
+  /*
   Serial.print("PE: ");
   Serial.print(isSensorPE);
   Serial.print(" | CE: ");
@@ -233,7 +234,7 @@ void lerSensores() {
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
   Serial.print(intDistanciaL);
-  Serial.println(" cm");
+  Serial.println(" cm");*/
 }
 
 /*
@@ -433,7 +434,7 @@ void seguirLinha() {
         mover(DIREITA, VEL_CURVA, 3);
       }
       mover(PARAR, VEL_BASE, 1000);
-      while (intDistanciaL != 25) {
+      while (intDistanciaL < 25) {
         lerSensores();
         mover(FRENTE, VEL_DEFAULT, 3);
       }
