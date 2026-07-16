@@ -241,14 +241,21 @@ void lerSensores() {
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
-  // -------- SENSOR DE DISTÂNCIA "C" (canal 0 do MUX) --------
-  selectChannel(I2C_CANAL_DISTANCIA_C);
-  distanciaC = sensorDistanciaC.readRange() / 10;
+  // -------- LIMITA A LEITURA DOS SENSORES DE DISTÂNCIA (evita travar o loop) --------
+  static unsigned long ultimaLeituraDistancia = 0;
+  if (millis() - ultimaLeituraDistancia >= 30) {  // ajuste esse intervalo se precisar
+    ultimaLeituraDistancia = millis();
 
-  // -------- SENSOR DE DISTÂNCIA "L" (canal 2 do MUX) --------
-  selectChannel(I2C_CANAL_DISTANCIA_L);
-  distanciaL = sensorDistanciaL.readRange() / 10;
+    selectChannel(I2C_CANAL_DISTANCIA_C);
+    if (sensorDistanciaC.isRangeComplete()) {
+      distanciaC = sensorDistanciaC.readRange() / 10;
+    }
 
+    selectChannel(I2C_CANAL_DISTANCIA_L);
+    if (sensorDistanciaL.isRangeComplete()) {
+      distanciaL = sensorDistanciaL.readRange() / 10;
+    }
+  }
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /**/
   Serial.print("PE: ");
