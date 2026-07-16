@@ -427,7 +427,7 @@ void seguirLinha() {
     case OBSTACULO:
       // -------- OBSTACULO --------
       mover(PARAR, VEL_BASE, 1000);
-      while (intDistanciaL > 7) {
+      while (intDistanciaL > 15) {
         mover(DIREITA, VEL_CURVA, 3);
       }
       break;
