@@ -442,6 +442,7 @@ void seguirLinha() {
         lerSensores();
         mover(ESQUERDA, VEL_CURVA, 3);
       }
+      mover(PARAR, VEL_BASE, 5000);
       break;
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
