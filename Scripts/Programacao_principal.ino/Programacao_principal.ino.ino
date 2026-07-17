@@ -430,18 +430,21 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 1000);
       mover(TRAS, VEL_DEFAULT, 150);
       mover(DIREITA, VEL_CURVA, 200);
-      while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {//adicionar redundancia ao while, ou filtro a leitura 
+      while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {  //adicionar redundancia ao while, ou filtro a leitura
         lerSensores();
         mover(DIREITA, VEL_CURVA, 3);
       }
       mover(DIREITA, VEL_CURVA, 300);
       mover(PARAR, VEL_BASE, 1000);
       mover(FRENTE, VEL_BASE, 2800);
+      mover(DIREITA, VEL_CURVA, 200);
       mover(PARAR, VEL_BASE, 1000);
-      while (!(intDistanciaL >= 20 && intDistanciaL <= 25)) {
+      while (!(intDistanciaL >= 10 && intDistanciaL <= 12)) {
         lerSensores();
         mover(ESQUERDA, VEL_CURVA, 3);
       }
+      mover(PARAR, VEL_BASE, 1000);
+      mover(ESQUERDA, VEL_CURVA, 350);
       mover(PARAR, VEL_BASE, 5000);
       break;
     case INTERSECAO_SEM_MARCACAO:
