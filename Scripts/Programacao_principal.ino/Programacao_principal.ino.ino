@@ -437,7 +437,7 @@ void seguirLinha() {
       mover(DIREITA, VEL_CURVA, 300);
       mover(PARAR, VEL_BASE, 1000);
       mover(FRENTE, VEL_BASE, 2800);
-      mover(DIREITA, VEL_CURVA, 200);
+      mover(ESQUERDA, VEL_CURVA, 300);
       mover(PARAR, VEL_BASE, 1000);
       while (!(intDistanciaL >= 10 && intDistanciaL <= 12)) {
         lerSensores();
