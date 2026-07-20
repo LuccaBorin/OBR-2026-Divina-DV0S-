@@ -434,17 +434,33 @@ void seguirLinha() {
         lerSensores();
         mover(DIREITA, VEL_CURVA, 3);
       }
-      mover(DIREITA, VEL_CURVA, 300);
+      mover(DIREITA, VEL_CURVA, 250);
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 2800);
+      mover(FRENTE, VEL_BASE, 2875);
       mover(ESQUERDA, VEL_CURVA, 300);
       mover(PARAR, VEL_BASE, 1000);
-      while (!(intDistanciaL >= 10 && intDistanciaL <= 12)) {
+      while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
         lerSensores();
         mover(ESQUERDA, VEL_CURVA, 3);
       }
       mover(PARAR, VEL_BASE, 1000);
-      mover(ESQUERDA, VEL_CURVA, 350);
+      mover(ESQUERDA, VEL_CURVA, 475);
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 3250);
+      mover(ESQUERDA, VEL_CURVA, 200);
+      mover(PARAR, VEL_BASE, 1000);
+      while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
+        lerSensores();
+        mover(ESQUERDA, VEL_CURVA, 3);
+      }
+      mover(PARAR, VEL_BASE, 1000);
+      mover(ESQUERDA, VEL_CURVA, 1625);
+      mover(FRENTE, VEL_BASE, 2000);
+      while (!isSensorCM) {
+        lerSensores();
+        mover(FRENTE, VEL_DEFAULT, 3);
+      }
+      mover(DIREITA, VEL_CURVA, 200);
       mover(PARAR, VEL_BASE, 5000);
       break;
     case INTERSECAO_SEM_MARCACAO:
