@@ -454,7 +454,7 @@ void seguirLinha() {
         mover(ESQUERDA, VEL_CURVA, 3);
       }
       mover(PARAR, VEL_BASE, 1000);
-      mover(ESQUERDA, VEL_CURVA, 1625);
+      mover(ESQUERDA, VEL_CURVA, 1425);
       mover(FRENTE, VEL_BASE, 2000);
       while (!isSensorCM) {
         lerSensores();
