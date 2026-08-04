@@ -446,7 +446,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 1000);
       mover(ESQUERDA, VEL_CURVA, 475);
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 3250);
+      mover(FRENTE, VEL_BASE, 4650);
       mover(ESQUERDA, VEL_CURVA, 200);
       mover(PARAR, VEL_BASE, 1000);
       while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
