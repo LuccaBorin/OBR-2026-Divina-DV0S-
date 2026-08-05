@@ -112,7 +112,7 @@ enum PerfilVelocidade {
 // ENUM: Desafio
 // ======================================================
 enum Desafio {
-  VERMELHO,
+  FIM_DA_PISTA,
   VERDE_DIREITA,
   VERDE_ESQUERDA,
   OBSTACULO,                // Obstaculo
