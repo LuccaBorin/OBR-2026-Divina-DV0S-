@@ -406,7 +406,10 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (intDistanciaC <= 10) {
+  if(corDireitaG > corDireitaR && corDireitaG > corDireitaB){
+    desafioAtual = VERDE_DIREITA;
+  }
+  else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
       // -------- OBSTACULO --------
       desafioAtual = OBSTACULO;
