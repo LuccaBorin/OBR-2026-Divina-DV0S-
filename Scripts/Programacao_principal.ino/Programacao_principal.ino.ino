@@ -492,13 +492,13 @@ void seguirLinha() {
 
     case VERDE_DIREITA:
       // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(FRENTE, VEL_BASE, 400);
       break;
 
     case OBSTACULO:
       // -------- OBSTACULO --------
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(TRAS, VEL_DEFAULT, 150);
       mover(DIREITA, VEL_CURVA, 200);
       while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {  //adicionar redundancia ao while, ou filtro a leitura
@@ -506,25 +506,25 @@ void seguirLinha() {
         mover(DIREITA, VEL_CURVA, 3);
       }
       mover(DIREITA, VEL_CURVA, 250);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(FRENTE, VEL_BASE, 2875);
       mover(ESQUERDA, VEL_CURVA, 300);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
         lerSensores();
         mover(ESQUERDA, VEL_CURVA, 3);
       }
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(ESQUERDA, VEL_CURVA, 475);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(FRENTE, VEL_BASE, 3250);
       mover(ESQUERDA, VEL_CURVA, 200);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
         lerSensores();
         mover(ESQUERDA, VEL_CURVA, 3);
       }
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(ESQUERDA, VEL_CURVA, 1425);
       mover(FRENTE, VEL_BASE, 2000);
       while (!isSensorCM) {
@@ -532,11 +532,11 @@ void seguirLinha() {
         mover(FRENTE, VEL_DEFAULT, 3);
       }
       mover(DIREITA, VEL_CURVA, 200);
-      mover(PARAR, VEL_BASE, 5000);
+      mover(PARAR, VEL_BASE, 100);
       break;
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
-      mover(PARAR, VEL_BASE, 200);
+      mover(PARAR, VEL_BASE, 100);
       mover(FRENTE, VEL_BASE, 425);
       break;
 
