@@ -491,8 +491,9 @@ void seguirLinha() {
 
     case VERDE_DIREITA:
       // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
-      mover(PARAR, VEL_BASE, 100);
+      mover(PARAR, VEL_BASE, 1000);
       mover(FRENTE, VEL_BASE, 400);
+      mover(PARAR, VEL_BASE, 1000);
       break;
 
     case OBSTACULO:
