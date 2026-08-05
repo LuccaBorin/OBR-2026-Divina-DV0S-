@@ -155,7 +155,7 @@ void setup() {
   // -------- DEBUG: liga o Monitor Serial -------
   Serial.begin(115200);
   Wire.begin();
-
+  Wire.setClock(400000);
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
