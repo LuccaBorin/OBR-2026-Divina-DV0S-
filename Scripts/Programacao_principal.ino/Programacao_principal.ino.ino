@@ -85,6 +85,15 @@ Adafruit_TCS34725 corDireita = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS,
 #define I2C_CANAL_COR_DIREITA 4   // Canal do MUX (TCA9548A, 0x70) onde o TCS34725 direito está ligado
 
 // ======================================================
+// AGENDAMENTO DAS LEITURAS I2C
+// Os sensores de linha são lidos SEMPRE. As leituras I2C
+// são espaçadas para não travar o seguimento da linha.
+// ======================================================
+#define INTERVALO_DISTANCIA_MS 5   // alterna C/L a cada 5 ms
+#define INTERVALO_COR_MS       8   // alterna E/D a cada 8 ms
+
+
+// ======================================================
 // ENUM: Direcao
 // ======================================================
 enum Direcao {
@@ -124,6 +133,14 @@ enum Desafio {
   NENHUM                    // Andar para frente (não detectou nada)
 };
 // ======================================================
+// ENUM: Direcao
+// ======================================================
+enum Cor {
+  VERDE,
+  VERMELHO,
+  SEM_COR
+};
+// ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
 // Booleanos com prefixo "is" para leitura natural nos ifs
 // ======================================================
@@ -143,6 +160,7 @@ Desafio desafioAtual = NENHUM;                                    // Variavel qu
 // PROTÓTIPOS DAS FUNÇÕES — camelCase, verbos no infinitivo
 // ======================================================
 void lerSensores();
+void lerSensoresI2C();
 void detectarDesafio();
 void seguirLinha();
 void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo);
@@ -155,7 +173,10 @@ void setup() {
   // -------- DEBUG: liga o Monitor Serial -------
   Serial.begin(115200);
   Wire.begin();
-  Wire.setClock(400000);
+  Wire.setClock(400000);  // Fast Mode: 400 kHz é o limite prático/recomendado aqui.
+#if defined(ESP32)
+  Wire.setTimeOut(2);     // evita travamento longo do loop caso algum dispositivo I2C falhe
+#endif
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
@@ -170,6 +191,17 @@ void setup() {
   corEsquerda.begin();
   selectChannel(I2C_CANAL_COR_DIREITA);
   corDireita.begin();
+
+  // Primeira leitura de linha + I2C para começar com valores válidos.
+  lerSensores();
+  selectChannel(I2C_CANAL_COR_ESQUERDA);
+  corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+  selectChannel(I2C_CANAL_COR_DIREITA);
+  corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+  selectChannel(I2C_CANAL_DISTANCIA_C);
+  intDistanciaC = distanciaC.readRange() / 10;
+  selectChannel(I2C_CANAL_DISTANCIA_L);
+  intDistanciaL = distanciaL.readRange() / 10;
 }
 
 // ======================================================
@@ -198,13 +230,16 @@ void loop() {
  */
 // Guarda o canal atualmente selecionado no MUX, para não escrever
 // de novo no registrador quando o canal pedido já está ativo.
-uint8_t canalAtualMUX = 0xFF;  // valor inválido inicial, força a 1ª troca
+uint8_t canalAtualMUX = 0xFF;
 
+// Troca de canal mínima: só escreve no TCA9548A quando o canal realmente muda.
+// Isso NÃO faz cache das leituras dos sensores; apenas evita transmissões I2C repetidas.
 void selectChannel(uint8_t channel) {
-  if (channel == canalAtualMUX) return;  // já está no canal certo, não faz nada
+  if (channel == canalAtualMUX) return;
+
   Wire.beginTransmission(0x70);
-  Wire.write(1 << channel);
-  Wire.endTransmission();
+  Wire.write((uint8_t)(1u << channel));
+  Wire.endTransmission(false);
   canalAtualMUX = channel;
 }
 
@@ -235,59 +270,57 @@ void selectChannel(uint8_t channel) {
  * -------------------------------------------------------
  */
 void lerSensores() {
+  // CRÍTICO: sensores de linha ficam fora do I2C e são lidos em TODO ciclo.
   isSensorPE = digitalRead(PIN_SENSOR_PE);
   isSensorCE = digitalRead(PIN_SENSOR_CE);
   isSensorCM = digitalRead(PIN_SENSOR_CM);
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
-  // -------- SELECT CHANNEL: sensor de distância --------
-  selectChannel(I2C_CANAL_DISTANCIA_C);
-  intDistanciaC = distanciaC.readRange() / 10.0;
-  selectChannel(I2C_CANAL_DISTANCIA_L);
-  intDistanciaL = distanciaL.readRange() / 10.0;
+  // I2C é executado de forma agendada, sem bloquear cada ciclo da linha.
+  lerSensoresI2C();
+}
 
-  // -------- SELECT CHANNEL: sensores de cor (esquerda e direita) --------
-  selectChannel(I2C_CANAL_COR_ESQUERDA);
-  corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
-  selectChannel(I2C_CANAL_COR_DIREITA);
-  corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+void lerSensoresI2C() {
+  static uint32_t ultimaDistancia = 0;
+  static uint32_t ultimaCor = 0;
+  static bool proximaCorEsquerda = true;
+  static bool proximaDistanciaCentral = true;
 
+  const uint32_t agora = millis();
 
-  // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /*
-  Serial.print("PE: ");
-  Serial.print(isSensorPE);
-  Serial.print(" | CE: ");
-  Serial.print(isSensorCE);
-  Serial.print(" | CM: ");
-  Serial.print(isSensorCM);
-  Serial.print(" | CD: ");
-  Serial.print(isSensorCD);
-  Serial.print(" | PD: ");
-  Serial.print(isSensorPD);
-  Serial.print(" | Dist C: ");
-  Serial.print(intDistanciaC);
-  Serial.print(" cm | Dist L: ");
-  Serial.print(intDistanciaL);
-  Serial.println(" cm");
-  Serial.print("Cor Esq -> R: ");
-  Serial.print(corEsquerdaR);
-  Serial.print(" G: ");
-  Serial.print(corEsquerdaG);
-  Serial.print(" B: ");
-  Serial.print(corEsquerdaB);
-  Serial.print(" C: ");
-  Serial.print(corEsquerdaC);
-  Serial.print(" | Cor Dir -> R: ");
-  Serial.print(corDireitaR);
-  Serial.print(" G: ");
-  Serial.print(corDireitaG);
-  Serial.print(" B: ");
-  Serial.print(corDireitaB);
-  Serial.print(" C: ");
-  Serial.println(corDireitaC);
-  */
+  // -------- DISTÂNCIA --------
+  // Lê apenas UM VL53 por vez. Cada sensor é atualizado a cada ~10 ms.
+  if ((uint32_t)(agora - ultimaDistancia) >= INTERVALO_DISTANCIA_MS) {
+    ultimaDistancia = agora;
+
+    if (proximaDistanciaCentral) {
+      selectChannel(I2C_CANAL_DISTANCIA_C);
+      intDistanciaC = distanciaC.readRange() / 10;
+    } else {
+      selectChannel(I2C_CANAL_DISTANCIA_L);
+      intDistanciaL = distanciaL.readRange() / 10;
+    }
+
+    proximaDistanciaCentral = !proximaDistanciaCentral;
+  }
+
+  // -------- COR --------
+  // Nunca lê os dois TCS no mesmo ciclo. Isso corta praticamente pela metade
+  // o tempo consecutivo gasto no I2C e mantém os sensores de linha responsivos.
+  if ((uint32_t)(agora - ultimaCor) >= INTERVALO_COR_MS) {
+    ultimaCor = agora;
+
+    if (proximaCorEsquerda) {
+      selectChannel(I2C_CANAL_COR_ESQUERDA);
+      corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+    } else {
+      selectChannel(I2C_CANAL_COR_DIREITA);
+      corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+    }
+
+    proximaCorEsquerda = !proximaCorEsquerda;
+  }
 }
 
 /*
@@ -397,65 +430,41 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (corDireitaG > corDireitaR && corDireitaG > corDireitaB) {
-    // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
+  // 1) Verde à direita. A margem evita que qualquer leitura com G apenas
+  // ligeiramente maior que R/B seja interpretada como verde.
+  if (corDireitaG > 100 &&
+      corDireitaG > (uint16_t)(corDireitaR * 1.20f) &&
+      corDireitaG > (uint16_t)(corDireitaB * 1.20f)) {
+
     desafioAtual = VERDE_DIREITA;
-  } else if (intDistanciaC <= 10) {
-    if (intDistanciaC <= 10) {
-      // -------- OBSTACULO --------
-      desafioAtual = OBSTACULO;
-    }
-  } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
+    return;
+  }
+
+  // 2) Obstáculo central.
+  if (intDistanciaC > 0 && intDistanciaC <= 10) {
+    desafioAtual = OBSTACULO;
+    return;
+  }
+
+  // 3) Seguimento da linha.
+  if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {
     if (isSensorPE && isSensorPD && isSensorCM) {
-      // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       desafioAtual = INTERSECAO_SEM_MARCACAO;
     } else if (isSensorPE && !isSensorPD) {
-      // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
-
     } else if (isSensorPD && !isSensorPE) {
-      // -------- CURVA DE 90° PARA A DIREITA --------
       desafioAtual = NOVENTA_GRAUS_DIREITA;
-
     } else if (isSensorCE) {
-      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
       desafioAtual = CURVA_LEVE_ESQUERDA;
-
     } else if (isSensorCD) {
-      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
       desafioAtual = CURVA_LEVE_DIREITA;
-
     } else {
-      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
       desafioAtual = NENHUM;
     }
+  } else {
+    // IMPORTANTE: nunca deixa um desafio antigo preso.
+    desafioAtual = NENHUM;
   }
-
-  // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /*
-  Serial.print("Desafio detectado: ");
-  switch (desafioAtual) {
-    case INTERSECAO_SEM_MARCACAO:
-      Serial.println("INTERSECAO_SEM_MARCACAO");
-      break;
-    case NOVENTA_GRAUS_ESQUERDA:
-      Serial.println("NOVENTA_GRAUS_ESQUERDA");
-      break;
-    case NOVENTA_GRAUS_DIREITA:
-      Serial.println("NOVENTA_GRAUS_DIREITA");
-      break;
-    case CURVA_LEVE_ESQUERDA:
-      Serial.println("CURVA_LEVE_ESQUERDA");
-      break;
-    case CURVA_LEVE_DIREITA:
-      Serial.println("CURVA_LEVE_DIREITA");
-      break;
-    case NENHUM:
-    default:
-      Serial.println("NENHUM (linha reta)");
-      break;
-  }
-  */
 }
 
 
@@ -483,9 +492,8 @@ void seguirLinha() {
 
     case VERDE_DIREITA:
       // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 100);
       mover(FRENTE, VEL_BASE, 400);
-      mover(PARAR, VEL_BASE, 1000);
       break;
 
     case OBSTACULO:
