@@ -8,7 +8,7 @@
  *   Plataforma  : RoboCore Vespa (ESP32)
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
  *   Motor driver: DRV8837 (via biblioteca VespaMotors)
- *   Distância   : VL53L0X x2 (sensores a laser), via multiplexador I2C
+ *   Distância   : VL53L0X (sensor a laser), via multiplexador I2C (canal 0)
  *   Cor         : TCS34725 x2 (esquerda e direita), via multiplexador I2C (canais 3 e 4)
  *
  * Convenções de nomenclatura utilizadas:
@@ -85,15 +85,6 @@ Adafruit_TCS34725 corDireita = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS,
 #define I2C_CANAL_COR_DIREITA 4   // Canal do MUX (TCA9548A, 0x70) onde o TCS34725 direito está ligado
 
 // ======================================================
-// AGENDAMENTO DAS LEITURAS I2C
-// Os sensores de linha são lidos SEMPRE. As leituras I2C
-// são espaçadas para não travar o seguimento da linha.
-// ======================================================
-#define INTERVALO_DISTANCIA_MS 12  // alterna C/L; cada VL atualiza ~a cada 24 ms
-#define INTERVALO_COR_MS       12  // alterna E/D; cada TCS atualiza ~a cada 24 ms
-
-
-// ======================================================
 // ENUM: Direcao
 // ======================================================
 enum Direcao {
@@ -160,7 +151,6 @@ Desafio desafioAtual = NENHUM;                                    // Variavel qu
 // PROTÓTIPOS DAS FUNÇÕES — camelCase, verbos no infinitivo
 // ======================================================
 void lerSensores();
-void lerSensoresI2C();
 void detectarDesafio();
 void seguirLinha();
 void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo);
@@ -173,44 +163,21 @@ void setup() {
   // -------- DEBUG: liga o Monitor Serial -------
   Serial.begin(115200);
   Wire.begin();
-  Wire.setClock(400000);  // Fast Mode: 400 kHz é o limite prático/recomendado aqui.
-#if defined(ESP32)
-  Wire.setTimeOut(2);     // evita travamento longo do loop caso algum dispositivo I2C falhe
-#endif
+  Wire.setClock(400000);  // I2C a 400kHz (Fast Mode) em vez de 100kHz -> troca de canal do MUX ~4x mais rápida
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
-  if (!distanciaC.begin()) {
-    Serial.println("ERRO: VL53L0X C nao iniciou");
-  } else {
-    distanciaC.startRangeContinuous(20);
-  }
+  distanciaC.begin();
+  distanciaC.startRangeContinuous();
   selectChannel(I2C_CANAL_DISTANCIA_L);
-  if (!distanciaL.begin()) {
-    Serial.println("ERRO: VL53L0X L nao iniciou");
-  } else {
-    distanciaL.startRangeContinuous(20);
-  }
+  distanciaL.begin();
+  distanciaL.startRangeContinuous();
 
   // -------- Inicializa os sensores de cor (canais 3 e 4 do MUX) --------
   selectChannel(I2C_CANAL_COR_ESQUERDA);
-  if (!corEsquerda.begin()) {
-    Serial.println("ERRO: TCS34725 esquerdo nao iniciou");
-  }
+  corEsquerda.begin();
   selectChannel(I2C_CANAL_COR_DIREITA);
-  if (!corDireita.begin()) {
-    Serial.println("ERRO: TCS34725 direito nao iniciou");
-  }
-
-  // Primeira leitura de linha + I2C para começar com valores válidos.
-  lerSensores();
-  selectChannel(I2C_CANAL_COR_ESQUERDA);
-  corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
-  selectChannel(I2C_CANAL_COR_DIREITA);
-  corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
-  // As distâncias serão preenchidas pelo modo contínuo no loop.
-  intDistanciaC = 999;
-  intDistanciaL = 999;
+  corDireita.begin();
 }
 
 // ======================================================
@@ -239,16 +206,13 @@ void loop() {
  */
 // Guarda o canal atualmente selecionado no MUX, para não escrever
 // de novo no registrador quando o canal pedido já está ativo.
-uint8_t canalAtualMUX = 0xFF;
+uint8_t canalAtualMUX = 0xFF;  // valor inválido inicial, força a 1ª troca
 
-// Troca de canal mínima: só escreve no TCA9548A quando o canal realmente muda.
-// Isso NÃO faz cache das leituras dos sensores; apenas evita transmissões I2C repetidas.
 void selectChannel(uint8_t channel) {
-  if (channel == canalAtualMUX) return;
-
+  if (channel == canalAtualMUX) return;  // já está no canal certo, não faz nada
   Wire.beginTransmission(0x70);
-  Wire.write((uint8_t)(1u << channel));
-  Wire.endTransmission(false);
+  Wire.write(1 << channel);
+  Wire.endTransmission();
   canalAtualMUX = channel;
 }
 
@@ -279,88 +243,59 @@ void selectChannel(uint8_t channel) {
  * -------------------------------------------------------
  */
 void lerSensores() {
-  // CRÍTICO: sensores de linha ficam fora do I2C e são lidos em TODO ciclo.
   isSensorPE = digitalRead(PIN_SENSOR_PE);
   isSensorCE = digitalRead(PIN_SENSOR_CE);
   isSensorCM = digitalRead(PIN_SENSOR_CM);
   isSensorCD = digitalRead(PIN_SENSOR_CD);
   isSensorPD = digitalRead(PIN_SENSOR_PD);
 
-  // I2C é executado de forma agendada, sem bloquear cada ciclo da linha.
-  lerSensoresI2C();
-}
+  // -------- SELECT CHANNEL: sensor de distância --------
+  selectChannel(I2C_CANAL_DISTANCIA_C);
+  intDistanciaC = distanciaC.readRange() / 10.0;
+  selectChannel(I2C_CANAL_DISTANCIA_L);
+  intDistanciaL = distanciaL.readRange() / 10.0;
 
-void lerSensoresI2C() {
-  static uint32_t ultimaDistancia = 0;
-  static uint32_t ultimaCor = 0;
-  static bool proximaCorEsquerda = true;
-  static bool proximaDistanciaCentral = true;
+  // -------- SELECT CHANNEL: sensores de cor (esquerda e direita) --------
+  selectChannel(I2C_CANAL_COR_ESQUERDA);
+  corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+  selectChannel(I2C_CANAL_COR_DIREITA);
+  corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
 
-  const uint32_t agora = millis();
 
-  // ======================================================
-  // DISTÂNCIA
-  // ======================================================
-  // Os VL53 ficam em modo contínuo. Aqui NÃO usamos readRange(),
-  // pois essa função é de leitura single-shot e pode esperar uma
-  // medição. Apenas verificamos se a medição contínua terminou.
-  if ((uint32_t)(agora - ultimaDistancia) >= INTERVALO_DISTANCIA_MS) {
-    ultimaDistancia = agora;
-
-    if (proximaDistanciaCentral) {
-      selectChannel(I2C_CANAL_DISTANCIA_C);
-
-      if (distanciaC.isRangeComplete()) {
-        uint16_t mm = distanciaC.readRangeResult();
-
-        if (distanciaC.readRangeStatus() == 0 && mm > 0) {
-          intDistanciaC = mm / 10;
-        }
-      }
-    } else {
-      selectChannel(I2C_CANAL_DISTANCIA_L);
-
-      if (distanciaL.isRangeComplete()) {
-        uint16_t mm = distanciaL.readRangeResult();
-
-        if (distanciaL.readRangeStatus() == 0 && mm > 0) {
-          intDistanciaL = mm / 10;
-        }
-      }
-    }
-
-    proximaDistanciaCentral = !proximaDistanciaCentral;
-  }
-
-  // ======================================================
-  // COR
-  // ======================================================
-  // Nunca lê os dois TCS no mesmo instante.
-  if ((uint32_t)(agora - ultimaCor) >= INTERVALO_COR_MS) {
-    ultimaCor = agora;
-
-    if (proximaCorEsquerda) {
-      selectChannel(I2C_CANAL_COR_ESQUERDA);
-
-      corEsquerda.getRawData(
-        &corEsquerdaR,
-        &corEsquerdaG,
-        &corEsquerdaB,
-        &corEsquerdaC
-      );
-    } else {
-      selectChannel(I2C_CANAL_COR_DIREITA);
-
-      corDireita.getRawData(
-        &corDireitaR,
-        &corDireitaG,
-        &corDireitaB,
-        &corDireitaC
-      );
-    }
-
-    proximaCorEsquerda = !proximaCorEsquerda;
-  }
+  // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
+  /*
+  Serial.print("PE: ");
+  Serial.print(isSensorPE);
+  Serial.print(" | CE: ");
+  Serial.print(isSensorCE);
+  Serial.print(" | CM: ");
+  Serial.print(isSensorCM);
+  Serial.print(" | CD: ");
+  Serial.print(isSensorCD);
+  Serial.print(" | PD: ");
+  Serial.print(isSensorPD);
+  Serial.print(" | Dist C: ");
+  Serial.print(intDistanciaC);
+  Serial.print(" cm | Dist L: ");
+  Serial.print(intDistanciaL);
+  Serial.println(" cm");
+  Serial.print("Cor Esq -> R: ");
+  Serial.print(corEsquerdaR);
+  Serial.print(" G: ");
+  Serial.print(corEsquerdaG);
+  Serial.print(" B: ");
+  Serial.print(corEsquerdaB);
+  Serial.print(" C: ");
+  Serial.print(corEsquerdaC);
+  Serial.print(" | Cor Dir -> R: ");
+  Serial.print(corDireitaR);
+  Serial.print(" G: ");
+  Serial.print(corDireitaG);
+  Serial.print(" B: ");
+  Serial.print(corDireitaB);
+  Serial.print(" C: ");
+  Serial.println(corDireitaC);
+  */
 }
 
 /*
@@ -470,41 +405,65 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  // 1) Verde à direita. A margem evita que qualquer leitura com G apenas
-  // ligeiramente maior que R/B seja interpretada como verde.
-  if (corDireitaC > 80 &&
-      corDireitaG > (uint16_t)(corDireitaR * 1.25f) &&
-      corDireitaG > (uint16_t)(corDireitaB * 1.15f)) {
-
+  if (corDireitaG > corDireitaR && corDireitaG > corDireitaB) {
+    // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
     desafioAtual = VERDE_DIREITA;
-    return;
-  }
-
-  // 2) Obstáculo central.
-  if (intDistanciaC > 0 && intDistanciaC <= 10) {
-    desafioAtual = OBSTACULO;
-    return;
-  }
-
-  // 3) Seguimento da linha.
-  if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {
+  } else if (intDistanciaC <= 10) {
+    if (intDistanciaC <= 10) {
+      // -------- OBSTACULO --------
+      desafioAtual = OBSTACULO;
+    }
+  } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
+      // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       desafioAtual = INTERSECAO_SEM_MARCACAO;
     } else if (isSensorPE && !isSensorPD) {
+      // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
+
     } else if (isSensorPD && !isSensorPE) {
+      // -------- CURVA DE 90° PARA A DIREITA --------
       desafioAtual = NOVENTA_GRAUS_DIREITA;
+
     } else if (isSensorCE) {
+      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
       desafioAtual = CURVA_LEVE_ESQUERDA;
+
     } else if (isSensorCD) {
+      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
       desafioAtual = CURVA_LEVE_DIREITA;
+
     } else {
+      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
       desafioAtual = NENHUM;
     }
-  } else {
-    // IMPORTANTE: nunca deixa um desafio antigo preso.
-    desafioAtual = NENHUM;
   }
+
+  // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
+  /*
+  Serial.print("Desafio detectado: ");
+  switch (desafioAtual) {
+    case INTERSECAO_SEM_MARCACAO:
+      Serial.println("INTERSECAO_SEM_MARCACAO");
+      break;
+    case NOVENTA_GRAUS_ESQUERDA:
+      Serial.println("NOVENTA_GRAUS_ESQUERDA");
+      break;
+    case NOVENTA_GRAUS_DIREITA:
+      Serial.println("NOVENTA_GRAUS_DIREITA");
+      break;
+    case CURVA_LEVE_ESQUERDA:
+      Serial.println("CURVA_LEVE_ESQUERDA");
+      break;
+    case CURVA_LEVE_DIREITA:
+      Serial.println("CURVA_LEVE_DIREITA");
+      break;
+    case NENHUM:
+    default:
+      Serial.println("NENHUM (linha reta)");
+      break;
+  }
+  */
 }
 
 
@@ -533,7 +492,9 @@ void seguirLinha() {
     case VERDE_DIREITA:
       // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
       mover(PARAR, VEL_BASE, 100);
+      mover(PARAR, VEL_BASE, 1000);
       mover(FRENTE, VEL_BASE, 400);
+      mover(PARAR, VEL_BASE, 1000);
       break;
 
     case OBSTACULO:
@@ -634,15 +595,8 @@ void seguirLinha() {
 
     case NENHUM:
     default:
-      // -------- LINHA RETA / NENHUM DESAFIO --------
-      // NÃO usar mover(..., 5) aqui: isso liga o motor por 5 ms
-      // e manda parar logo em seguida. Em motores pequenos isso
-      // pode não vencer o atrito estático, fazendo o robô parecer
-      // que "não anda".
-      //
-      // Mantemos os motores ligados continuamente. O próximo ciclo
-      // do loop atualiza os sensores e pode mudar a direção.
-      motors.forward(VEL_DEFAULT);
+      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
+      mover(FRENTE, VEL_DEFAULT, 5);
       break;
   }
 }
