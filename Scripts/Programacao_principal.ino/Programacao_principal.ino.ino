@@ -123,6 +123,7 @@ enum Desafio {
   CURVA_LEVE_DIREITA,       // Curva leve/correção para direita
   NENHUM                    // Andar para frente (não detectou nada)
 };
+
 // ======================================================
 // ENUM: Direcao
 // ======================================================
@@ -131,6 +132,7 @@ enum Cor {
   VERMELHO,
   SEM_COR
 };
+
 // ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
 // Booleanos com prefixo "is" para leitura natural nos ifs
@@ -260,10 +262,43 @@ void lerSensores() {
   // -------- SELECT CHANNEL: sensores de cor (esquerda e direita) --------
   selectChannel(I2C_CANAL_COR_ESQUERDA);
   sensorCorEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
-  if ((corEsquerdaG > corEsquerdaR) && (corEsquerdaG > corEsquerdaB)) { corEsquerda = VERDE; }else {corEsquerda = SEM_COR;}
+
+  // -------- DETECÇÃO DE VERDE: SENSOR ESQUERDO --------
+  // G precisa ser significativamente maior que R e B.
+  // A comparação usa inteiros para evitar float e não adiciona delay.
+  if (
+    corEsquerdaC >= 20 &&
+    (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 112 &&
+    (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 112 &&
+    (uint32_t)corEsquerdaG * 100 >=
+      ((uint32_t)corEsquerdaR +
+       (uint32_t)corEsquerdaG +
+       (uint32_t)corEsquerdaB) * 40
+  ) {
+    corEsquerda = VERDE;
+  } else {
+    corEsquerda = SEM_COR;
+  }
+
   selectChannel(I2C_CANAL_COR_DIREITA);
   sensorCorDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
-  if ((corDireitaG > corDireitaR) && (corDireitaG > corDireitaB)) { corDireita = VERDE; }else {corDireita = SEM_COR;}
+
+  // -------- DETECÇÃO DE VERDE: SENSOR DIREITO --------
+  // G precisa ser significativamente maior que R e B.
+  // A comparação usa inteiros para evitar float e não adiciona delay.
+  if (
+    corDireitaC >= 20 &&
+    (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 112 &&
+    (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 112 &&
+    (uint32_t)corDireitaG * 100 >=
+      ((uint32_t)corDireitaR +
+       (uint32_t)corDireitaG +
+       (uint32_t)corDireitaB) * 40
+  ) {
+    corDireita = VERDE;
+  } else {
+    corDireita = SEM_COR;
+  }
 
 
 
@@ -411,11 +446,12 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (corDireita == VERDE) {
-
+    // -------- VERDE NA DIREITA --------
+    desafioAtual = VERDE_DIREITA;
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
-      // -------- VERDE NA DIREITA --------
-      desafioAtual = VERDE_DIREITA;
+      // -------- OBSTACULO --------
+      desafioAtual = OBSTACULO;
     }
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
@@ -444,9 +480,15 @@ void detectarDesafio() {
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /*
+  
   Serial.print("Desafio detectado: ");
   switch (desafioAtual) {
+    case VERDE_DIREITA:
+      Serial.println("VERDE_DIREITA");
+      break;
+    case OBSTACULO:
+      Serial.println("OBSTACULO");
+      break;
     case INTERSECAO_SEM_MARCACAO:
       Serial.println("INTERSECAO_SEM_MARCACAO");
       break;
@@ -467,7 +509,7 @@ void detectarDesafio() {
       Serial.println("NENHUM (linha reta)");
       break;
   }
-  */
+  
 }
 
 
@@ -492,14 +534,6 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
-
-    case VERDE_DIREITA:
-      // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
-      mover(PARAR, VEL_BASE, 100);
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 400);
-      mover(PARAR, VEL_BASE, 1000);
-      break;
 
     case OBSTACULO:
       // -------- OBSTACULO --------
@@ -539,6 +573,7 @@ void seguirLinha() {
       mover(DIREITA, VEL_CURVA, 200);
       mover(PARAR, VEL_BASE, 100);
       break;
+
     case INTERSECAO_SEM_MARCACAO:
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       mover(PARAR, VEL_BASE, 100);
@@ -600,7 +635,8 @@ void seguirLinha() {
     case NENHUM:
     default:
       // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE, VEL_DEFAULT, 5);
+      mover(FRENTE, VEL_DEFAULT, 3);
       break;
   }
 }
+```
