@@ -260,10 +260,10 @@ void lerSensores() {
   // -------- SELECT CHANNEL: sensores de cor (esquerda e direita) --------
   selectChannel(I2C_CANAL_COR_ESQUERDA);
   sensorCorEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
-  if (corEsquerdaG > corEsquerdaR && corEsquerdaG > corEsquerdaB) { corEsquerda = VERDE; }
+  if ((corEsquerdaG > corEsquerdaR) && (corEsquerdaG > corEsquerdaB)) { corEsquerda = VERDE; }else {corEsquerda = SEM_COR;}
   selectChannel(I2C_CANAL_COR_DIREITA);
   sensorCorDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
-  if (corDireitaG > corDireitaR && corDireitaG > corDireitaB) { corDireita = VERDE; }
+  if ((corDireitaG > corDireitaR) && (corDireitaG > corDireitaB)) { corDireita = VERDE; }else {corDireita = SEM_COR;}
 
 
 
