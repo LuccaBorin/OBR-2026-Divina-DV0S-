@@ -8,7 +8,7 @@
  *   Plataforma  : RoboCore Vespa (ESP32)
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
  *   Motor driver: DRV8837 (via biblioteca VespaMotors)
- *   Distância   : VL53L0X (sensor a laser), via multiplexador I2C (canal 0)
+ *   Distância   : VL53L0X x2 (sensores a laser), via multiplexador I2C
  *   Cor         : TCS34725 x2 (esquerda e direita), via multiplexador I2C (canais 3 e 4)
  *
  * Convenções de nomenclatura utilizadas:
@@ -89,8 +89,8 @@ Adafruit_TCS34725 corDireita = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS,
 // Os sensores de linha são lidos SEMPRE. As leituras I2C
 // são espaçadas para não travar o seguimento da linha.
 // ======================================================
-#define INTERVALO_DISTANCIA_MS 5   // alterna C/L a cada 5 ms
-#define INTERVALO_COR_MS       8   // alterna E/D a cada 8 ms
+#define INTERVALO_DISTANCIA_MS 12  // alterna C/L; cada VL atualiza ~a cada 24 ms
+#define INTERVALO_COR_MS       12  // alterna E/D; cada TCS atualiza ~a cada 24 ms
 
 
 // ======================================================
@@ -180,17 +180,27 @@ void setup() {
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
-  distanciaC.begin();
-  distanciaC.startRangeContinuous();
+  if (!distanciaC.begin()) {
+    Serial.println("ERRO: VL53L0X C nao iniciou");
+  } else {
+    distanciaC.startRangeContinuous(20);
+  }
   selectChannel(I2C_CANAL_DISTANCIA_L);
-  distanciaL.begin();
-  distanciaL.startRangeContinuous();
+  if (!distanciaL.begin()) {
+    Serial.println("ERRO: VL53L0X L nao iniciou");
+  } else {
+    distanciaL.startRangeContinuous(20);
+  }
 
   // -------- Inicializa os sensores de cor (canais 3 e 4 do MUX) --------
   selectChannel(I2C_CANAL_COR_ESQUERDA);
-  corEsquerda.begin();
+  if (!corEsquerda.begin()) {
+    Serial.println("ERRO: TCS34725 esquerdo nao iniciou");
+  }
   selectChannel(I2C_CANAL_COR_DIREITA);
-  corDireita.begin();
+  if (!corDireita.begin()) {
+    Serial.println("ERRO: TCS34725 direito nao iniciou");
+  }
 
   // Primeira leitura de linha + I2C para começar com valores válidos.
   lerSensores();
@@ -198,10 +208,9 @@ void setup() {
   corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
   selectChannel(I2C_CANAL_COR_DIREITA);
   corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
-  selectChannel(I2C_CANAL_DISTANCIA_C);
-  intDistanciaC = distanciaC.readRange() / 10;
-  selectChannel(I2C_CANAL_DISTANCIA_L);
-  intDistanciaL = distanciaL.readRange() / 10;
+  // As distâncias serão preenchidas pelo modo contínuo no loop.
+  intDistanciaC = 999;
+  intDistanciaL = 999;
 }
 
 // ======================================================
@@ -289,34 +298,65 @@ void lerSensoresI2C() {
 
   const uint32_t agora = millis();
 
-  // -------- DISTÂNCIA --------
-  // Lê apenas UM VL53 por vez. Cada sensor é atualizado a cada ~10 ms.
+  // ======================================================
+  // DISTÂNCIA
+  // ======================================================
+  // Os VL53 ficam em modo contínuo. Aqui NÃO usamos readRange(),
+  // pois essa função é de leitura single-shot e pode esperar uma
+  // medição. Apenas verificamos se a medição contínua terminou.
   if ((uint32_t)(agora - ultimaDistancia) >= INTERVALO_DISTANCIA_MS) {
     ultimaDistancia = agora;
 
     if (proximaDistanciaCentral) {
       selectChannel(I2C_CANAL_DISTANCIA_C);
-      intDistanciaC = distanciaC.readRange() / 10;
+
+      if (distanciaC.isRangeComplete()) {
+        uint16_t mm = distanciaC.readRangeResult();
+
+        if (distanciaC.readRangeStatus() == 0 && mm > 0) {
+          intDistanciaC = mm / 10;
+        }
+      }
     } else {
       selectChannel(I2C_CANAL_DISTANCIA_L);
-      intDistanciaL = distanciaL.readRange() / 10;
+
+      if (distanciaL.isRangeComplete()) {
+        uint16_t mm = distanciaL.readRangeResult();
+
+        if (distanciaL.readRangeStatus() == 0 && mm > 0) {
+          intDistanciaL = mm / 10;
+        }
+      }
     }
 
     proximaDistanciaCentral = !proximaDistanciaCentral;
   }
 
-  // -------- COR --------
-  // Nunca lê os dois TCS no mesmo ciclo. Isso corta praticamente pela metade
-  // o tempo consecutivo gasto no I2C e mantém os sensores de linha responsivos.
+  // ======================================================
+  // COR
+  // ======================================================
+  // Nunca lê os dois TCS no mesmo instante.
   if ((uint32_t)(agora - ultimaCor) >= INTERVALO_COR_MS) {
     ultimaCor = agora;
 
     if (proximaCorEsquerda) {
       selectChannel(I2C_CANAL_COR_ESQUERDA);
-      corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+
+      corEsquerda.getRawData(
+        &corEsquerdaR,
+        &corEsquerdaG,
+        &corEsquerdaB,
+        &corEsquerdaC
+      );
     } else {
       selectChannel(I2C_CANAL_COR_DIREITA);
-      corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+
+      corDireita.getRawData(
+        &corDireitaR,
+        &corDireitaG,
+        &corDireitaB,
+        &corDireitaC
+      );
     }
 
     proximaCorEsquerda = !proximaCorEsquerda;
@@ -432,8 +472,9 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
 void detectarDesafio() {
   // 1) Verde à direita. A margem evita que qualquer leitura com G apenas
   // ligeiramente maior que R/B seja interpretada como verde.
-  if (corDireitaG > corDireitaR &&
-      corDireitaG > corDireitaB) {
+  if (corDireitaC > 80 &&
+      corDireitaG > (uint16_t)(corDireitaR * 1.25f) &&
+      corDireitaG > (uint16_t)(corDireitaB * 1.15f)) {
 
     desafioAtual = VERDE_DIREITA;
     return;
@@ -593,8 +634,15 @@ void seguirLinha() {
 
     case NENHUM:
     default:
-      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE, VEL_DEFAULT, 5);
+      // -------- LINHA RETA / NENHUM DESAFIO --------
+      // NÃO usar mover(..., 5) aqui: isso liga o motor por 5 ms
+      // e manda parar logo em seguida. Em motores pequenos isso
+      // pode não vencer o atrito estático, fazendo o robô parecer
+      // que "não anda".
+      //
+      // Mantemos os motores ligados continuamente. O próximo ciclo
+      // do loop atualiza os sensores e pode mudar a direção.
+      motors.forward(VEL_DEFAULT);
       break;
   }
 }
