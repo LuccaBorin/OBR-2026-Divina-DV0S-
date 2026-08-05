@@ -124,14 +124,6 @@ enum Desafio {
   NENHUM                    // Andar para frente (não detectou nada)
 };
 // ======================================================
-// ENUM: Direcao
-// ======================================================
-enum Cor {
-  VERDE,
-  VERMELHO,
-  SEM_COR
-};
-// ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
 // Booleanos com prefixo "is" para leitura natural nos ifs
 // ======================================================
@@ -163,7 +155,7 @@ void setup() {
   // -------- DEBUG: liga o Monitor Serial -------
   Serial.begin(115200);
   Wire.begin();
-  Wire.setClock(400000);  // I2C a 400kHz (Fast Mode) em vez de 100kHz -> troca de canal do MUX ~4x mais rápida
+
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
