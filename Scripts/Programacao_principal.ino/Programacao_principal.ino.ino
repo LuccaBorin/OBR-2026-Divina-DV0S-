@@ -432,9 +432,8 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
 void detectarDesafio() {
   // 1) Verde à direita. A margem evita que qualquer leitura com G apenas
   // ligeiramente maior que R/B seja interpretada como verde.
-  if (corDireitaG > 100 &&
-      corDireitaG > (uint16_t)(corDireitaR * 1.20f) &&
-      corDireitaG > (uint16_t)(corDireitaB * 1.20f)) {
+  if (corDireitaG > corDireitaR &&
+      corDireitaG > corDireitaB) {
 
     desafioAtual = VERDE_DIREITA;
     return;
