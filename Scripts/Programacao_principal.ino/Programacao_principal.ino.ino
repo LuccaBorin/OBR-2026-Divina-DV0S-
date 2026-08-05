@@ -534,7 +534,9 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
-
+    case VERDE_DIREITA:
+    mover(PARAR, VEL_BASE, 5000);
+    break;
     case OBSTACULO:
       // -------- OBSTACULO --------
       mover(PARAR, VEL_BASE, 100);
