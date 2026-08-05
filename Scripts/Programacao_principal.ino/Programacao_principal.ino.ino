@@ -9,6 +9,7 @@
  *   Sensores    : MÓDULO  com 5 x TCRT5000, sendo o central à frente e os demais alinhados (infravermelho, leitura digital)
  *   Motor driver: DRV8837 (via biblioteca VespaMotors)
  *   Distância   : VL53L0X (sensor a laser), via multiplexador I2C (canal 0)
+ *   Cor         : TCS34725 x2 (esquerda e direita), via multiplexador I2C (canais 3 e 4)
  *
  * Convenções de nomenclatura utilizadas:
  *   #define / pinos  → SNAKE_CASE_MAIUSCULO
@@ -44,6 +45,7 @@
 #include <RoboCore_Vespa.h>
 #include <Wire.h>
 #include <Adafruit_VL53L0X.h>
+#include <Adafruit_TCS34725.h>
 
 // ======================================================
 // OBJETOS
@@ -51,6 +53,10 @@
 VespaMotors motors;
 Adafruit_VL53L0X distanciaC = Adafruit_VL53L0X();
 Adafruit_VL53L0X distanciaL = Adafruit_VL53L0X();
+// Tempo de integração mínimo (2.4ms) para não travar o loop de
+// seguirLinha() — leitura de cor rápida, ao custo de menor precisão.
+Adafruit_TCS34725 corEsquerda = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
+Adafruit_TCS34725 corDireita = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
 
 // ======================================================
 // PINOS — SNAKE_CASE totalmente maiúsculo
@@ -74,7 +80,9 @@ Adafruit_VL53L0X distanciaL = Adafruit_VL53L0X();
 // I2C — Canal do multiplexador onde está o sensor de distância
 // ======================================================
 #define I2C_CANAL_DISTANCIA_C 0
-#define I2C_CANAL_DISTANCIA_L 2  // Canal do MUX (TCA9548A, 0x70) onde o VL53L0X está ligado
+#define I2C_CANAL_DISTANCIA_L 2   // Canal do MUX (TCA9548A, 0x70) onde o VL53L0X está ligado
+#define I2C_CANAL_COR_ESQUERDA 3  // Canal do MUX (TCA9548A, 0x70) onde o TCS34725 esquerdo está ligado
+#define I2C_CANAL_COR_DIREITA 4   // Canal do MUX (TCA9548A, 0x70) onde o TCS34725 direito está ligado
 
 // ======================================================
 // ENUM: Direcao
@@ -122,8 +130,10 @@ bool isSensorCM;  // Centro meio     ativo = robô centralizado
 bool isSensorCD;  // Centro direita  ativo = desvio leve à dir.
 bool isSensorPD;  // Ponta direita   ativo = robô saiu muito à dir.
 int intDistanciaC;
-int intDistanciaL;              // Última distância lida pelo VL53L0X (em cm)
-Desafio desafioAtual = NENHUM;  // Variavel que define o desafio que o robô esta enfrentando
+int intDistanciaL;                                                // Última distância lida pelo VL53L0X (em cm)
+uint16_t corEsquerdaR, corEsquerdaG, corEsquerdaB, corEsquerdaC;  // Última leitura RGB do TCS34725 esquerdo
+uint16_t corDireitaR, corDireitaG, corDireitaB, corDireitaC;      // Última leitura RGB do TCS34725 direito
+Desafio desafioAtual = NENHUM;                                    // Variavel que define o desafio que o robô esta enfrentando
 
 
 // ======================================================
@@ -140,7 +150,7 @@ void selectChannel(uint8_t channel);
 // ======================================================
 void setup() {
   // -------- DEBUG: liga o Monitor Serial -------
-  //Serial.begin(115200);
+  Serial.begin(115200);
   Wire.begin();
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
@@ -150,6 +160,12 @@ void setup() {
   selectChannel(I2C_CANAL_DISTANCIA_L);
   distanciaL.begin();
   distanciaL.startRangeContinuous();
+
+  // -------- Inicializa os sensores de cor (canais 3 e 4 do MUX) --------
+  selectChannel(I2C_CANAL_COR_ESQUERDA);
+  corEsquerda.begin();
+  selectChannel(I2C_CANAL_COR_DIREITA);
+  corDireita.begin();
 }
 
 // ======================================================
@@ -194,6 +210,10 @@ void selectChannel(uint8_t channel) {
  *             há uma medição nova pronta, atualiza distanciaCM
  *             (em cm). Se não houver medição nova, mantém o
  *             último valor lido.
+ *             Também troca para os canais 3 e 4 do multiplexador
+ *             I2C e lê os sensores de cor TCS34725 (esquerda e
+ *             direita), armazenando os valores brutos de R, G, B
+ *             e C (clear) nas variáveis globais correspondentes.
  *             Também imprime os valores no Monitor Serial
  *             para facilitar a depuração.
  *
@@ -218,6 +238,12 @@ void lerSensores() {
   selectChannel(I2C_CANAL_DISTANCIA_L);
   intDistanciaL = distanciaL.readRange() / 10.0;
 
+  // -------- SELECT CHANNEL: sensores de cor (esquerda e direita) --------
+  selectChannel(I2C_CANAL_COR_ESQUERDA);
+  corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+  selectChannel(I2C_CANAL_COR_DIREITA);
+  corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /*
   Serial.print("PE: ");
@@ -234,7 +260,23 @@ void lerSensores() {
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
   Serial.print(intDistanciaL);
-  Serial.println(" cm");*/
+  Serial.println(" cm");
+  Serial.print("Cor Esq -> R: ");
+  Serial.print(corEsquerdaR);
+  Serial.print(" G: ");
+  Serial.print(corEsquerdaG);
+  Serial.print(" B: ");
+  Serial.print(corEsquerdaB);
+  Serial.print(" C: ");
+  Serial.print(corEsquerdaC);
+  Serial.print(" | Cor Dir -> R: ");
+  Serial.print(corDireitaR);
+  Serial.print(" G: ");
+  Serial.print(corDireitaG);
+  Serial.print(" B: ");
+  Serial.print(corDireitaB);
+  Serial.print(" C: ");
+  Serial.println(corDireitaC);*/
 }
 
 /*
@@ -446,7 +488,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 1000);
       mover(ESQUERDA, VEL_CURVA, 475);
       mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 4650);
+      mover(FRENTE, VEL_BASE, 3250);
       mover(ESQUERDA, VEL_CURVA, 200);
       mover(PARAR, VEL_BASE, 1000);
       while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
