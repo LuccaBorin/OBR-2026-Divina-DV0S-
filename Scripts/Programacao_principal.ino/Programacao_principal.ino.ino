@@ -152,6 +152,7 @@ void setup() {
   // -------- DEBUG: liga o Monitor Serial -------
   Serial.begin(115200);
   Wire.begin();
+  Wire.setClock(400000);  // I2C a 400kHz (Fast Mode) em vez de 100kHz -> troca de canal do MUX ~4x mais rápida
 
   // -------- Inicializa o sensor de distância no canal 0 do MUX --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
@@ -193,10 +194,16 @@ void loop() {
  *   channel → número do canal (0 a 7)
  * -------------------------------------------------------
  */
+// Guarda o canal atualmente selecionado no MUX, para não escrever
+// de novo no registrador quando o canal pedido já está ativo.
+uint8_t canalAtualMUX = 0xFF;  // valor inválido inicial, força a 1ª troca
+
 void selectChannel(uint8_t channel) {
+  if (channel == canalAtualMUX) return;  // já está no canal certo, não faz nada
   Wire.beginTransmission(0x70);
   Wire.write(1 << channel);
   Wire.endTransmission();
+  canalAtualMUX = channel;
 }
 
 /*
@@ -244,6 +251,7 @@ void lerSensores() {
   selectChannel(I2C_CANAL_COR_DIREITA);
   corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
 
+
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
   /*
   Serial.print("PE: ");
@@ -276,7 +284,8 @@ void lerSensores() {
   Serial.print(" B: ");
   Serial.print(corDireitaB);
   Serial.print(" C: ");
-  Serial.println(corDireitaC);*/
+  Serial.println(corDireitaC);
+  */
 }
 
 /*
