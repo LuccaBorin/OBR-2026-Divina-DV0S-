@@ -55,8 +55,8 @@ Adafruit_VL53L0X distanciaC = Adafruit_VL53L0X();
 Adafruit_VL53L0X distanciaL = Adafruit_VL53L0X();
 // Tempo de integração mínimo (2.4ms) para não travar o loop de
 // seguirLinha() — leitura de cor rápida, ao custo de menor precisão.
-Adafruit_TCS34725 corEsquerda = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
-Adafruit_TCS34725 corDireita = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
+Adafruit_TCS34725 sensorCorEsquerda = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
+Adafruit_TCS34725 sensorCorDireita = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_4X);
 
 // ======================================================
 // PINOS — SNAKE_CASE totalmente maiúsculo
@@ -101,7 +101,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
-  VEL_DEFAULT = 85,
+  VEL_DEFAULT = 80,
   VEL_BASE = 70,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
@@ -145,6 +145,8 @@ int intDistanciaL;                                                // Última dis
 uint16_t corEsquerdaR, corEsquerdaG, corEsquerdaB, corEsquerdaC;  // Última leitura RGB do TCS34725 esquerdo
 uint16_t corDireitaR, corDireitaG, corDireitaB, corDireitaC;      // Última leitura RGB do TCS34725 direito
 Desafio desafioAtual = NENHUM;                                    // Variavel que define o desafio que o robô esta enfrentando
+Cor corDireita = SEM_COR;
+Cor corEsquerda = SEM_COR;
 
 
 // ======================================================
@@ -175,9 +177,9 @@ void setup() {
 
   // -------- Inicializa os sensores de cor (canais 3 e 4 do MUX) --------
   selectChannel(I2C_CANAL_COR_ESQUERDA);
-  corEsquerda.begin();
+  sensorCorEsquerda.begin();
   selectChannel(I2C_CANAL_COR_DIREITA);
-  corDireita.begin();
+  sensorCorDireita.begin();
 }
 
 // ======================================================
@@ -257,9 +259,12 @@ void lerSensores() {
 
   // -------- SELECT CHANNEL: sensores de cor (esquerda e direita) --------
   selectChannel(I2C_CANAL_COR_ESQUERDA);
-  corEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+  sensorCorEsquerda.getRawData(&corEsquerdaR, &corEsquerdaG, &corEsquerdaB, &corEsquerdaC);
+  if (corEsquerdaG > corEsquerdaR && corEsquerdaG > corEsquerdaB) { corEsquerda = VERDE; }
   selectChannel(I2C_CANAL_COR_DIREITA);
-  corDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+  sensorCorDireita.getRawData(&corDireitaR, &corDireitaG, &corDireitaB, &corDireitaC);
+  if (corDireitaG > corDireitaR && corDireitaG > corDireitaB) { corDireita = VERDE; }
+
 
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
@@ -405,13 +410,12 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (corDireitaG > corDireitaR && corDireitaG > corDireitaB) {
-    // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
-    desafioAtual = VERDE_DIREITA;
+  if (corDireita == VERDE) {
+
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
-      // -------- OBSTACULO --------
-      desafioAtual = OBSTACULO;
+      // -------- VERDE NA DIREITA --------
+      desafioAtual = VERDE_DIREITA;
     }
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
