@@ -406,10 +406,10 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if(corDireitaG > corDireitaR && corDireitaG > corDireitaB){
+  if (corDireitaG > corDireitaR && corDireitaG > corDireitaB) {
+    // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
     desafioAtual = VERDE_DIREITA;
-  }
-  else if (intDistanciaC <= 10) {
+  } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
       // -------- OBSTACULO --------
       desafioAtual = OBSTACULO;
@@ -489,6 +489,12 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
+
+    case VERDE_DIREITA:
+      // -------- INTERSEÇÃO COM MARCAÇÃO NA DIREITA --------
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 400);
+      break;
 
     case OBSTACULO:
       // -------- OBSTACULO --------
