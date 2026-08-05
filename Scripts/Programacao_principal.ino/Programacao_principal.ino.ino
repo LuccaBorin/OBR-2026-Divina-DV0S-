@@ -112,6 +112,9 @@ enum PerfilVelocidade {
 // ENUM: Desafio
 // ======================================================
 enum Desafio {
+  VERMELHO,
+  VERDE_DIREITA,
+  VERDE_ESQUERDA,
   OBSTACULO,                // Obstaculo
   INTERSECAO_SEM_MARCACAO,  // Interseções sem marcaçoes
   NOVENTA_GRAUS_ESQUERDA,   // Curva de 90 graus para esquerda
@@ -119,6 +122,14 @@ enum Desafio {
   CURVA_LEVE_ESQUERDA,      // Curva leve/correção para esquerda
   CURVA_LEVE_DIREITA,       // Curva leve/correção para direita
   NENHUM                    // Andar para frente (não detectou nada)
+};
+// ======================================================
+// ENUM: Direcao
+// ======================================================
+enum Cor {
+  VERDE,
+  VERMELHO,
+  NENHUM
 };
 // ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
