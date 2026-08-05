@@ -187,7 +187,6 @@ void loop() {
   lerSensores();
   detectarDesafio();
   seguirLinha();
-  lerSensores();  // Atualiza sensores após os movimentos de seguirLinha()
 }
 
 // ======================================================
