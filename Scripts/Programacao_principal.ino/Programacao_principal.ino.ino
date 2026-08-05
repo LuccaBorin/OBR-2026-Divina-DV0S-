@@ -639,4 +639,3 @@ void seguirLinha() {
       break;
   }
 }
-```
