@@ -129,7 +129,7 @@ enum Desafio {
 enum Cor {
   VERDE,
   VERMELHO,
-  NENHUM
+  SEM_COR
 };
 // ======================================================
 // VARIÁVEIS GLOBAIS — camelCase
