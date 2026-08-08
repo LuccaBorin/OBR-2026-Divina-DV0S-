@@ -246,12 +246,17 @@ void selectChannel(uint8_t channel) {
  *     ainda está se movendo
  * -------------------------------------------------------
  */
-void lerSensores() {
+void lerSensores() { /*
   isSensorPE = digitalRead(PIN_SENSOR_PE);
   isSensorCE = digitalRead(PIN_SENSOR_CE);
   isSensorCM = digitalRead(PIN_SENSOR_CM);
   isSensorCD = digitalRead(PIN_SENSOR_CD);
-  isSensorPD = digitalRead(PIN_SENSOR_PD);
+  isSensorPD = digitalRead(PIN_SENSOR_PD);*/
+  isSensorPE = 0;
+  isSensorCE = 0;
+  isSensorCM = 0;
+  isSensorCD = 0;
+  isSensorPD = 0;
 
   // -------- SELECT CHANNEL: sensor de distância --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
@@ -267,14 +272,7 @@ void lerSensores() {
   // G precisa ser significativamente maior que R e B.
   // A comparação usa inteiros para evitar float e não adiciona delay.
   if (
-    corEsquerdaC >= 20 &&
-    (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 112 &&
-    (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 112 &&
-    (uint32_t)corEsquerdaG * 100 >=
-      ((uint32_t)corEsquerdaR +
-       (uint32_t)corEsquerdaG +
-       (uint32_t)corEsquerdaB) * 40
-  ) {
+    corEsquerdaC >= 20 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 112 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 112 && (uint32_t)corEsquerdaG * 100 >= ((uint32_t)corEsquerdaR + (uint32_t)corEsquerdaG + (uint32_t)corEsquerdaB) * 40) {
     corEsquerda = VERDE;
   } else {
     corEsquerda = SEM_COR;
@@ -287,14 +285,7 @@ void lerSensores() {
   // G precisa ser significativamente maior que R e B.
   // A comparação usa inteiros para evitar float e não adiciona delay.
   if (
-    corDireitaC >= 20 &&
-    (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 112 &&
-    (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 112 &&
-    (uint32_t)corDireitaG * 100 >=
-      ((uint32_t)corDireitaR +
-       (uint32_t)corDireitaG +
-       (uint32_t)corDireitaB) * 40
-  ) {
+    corDireitaC >= 20 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 112 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 112 && (uint32_t)corDireitaG * 100 >= ((uint32_t)corDireitaR + (uint32_t)corDireitaG + (uint32_t)corDireitaB) * 40) {
     corDireita = VERDE;
   } else {
     corDireita = SEM_COR;
@@ -303,7 +294,7 @@ void lerSensores() {
 
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  /*
+  
   Serial.print("PE: ");
   Serial.print(isSensorPE);
   Serial.print(" | CE: ");
@@ -313,7 +304,7 @@ void lerSensores() {
   Serial.print(" | CD: ");
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
-  Serial.print(isSensorPD);
+  Serial.print(isSensorPD);/*
   Serial.print(" | Dist C: ");
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
@@ -480,7 +471,7 @@ void detectarDesafio() {
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  
+
   Serial.print("Desafio detectado: ");
   switch (desafioAtual) {
     case VERDE_DIREITA:
@@ -509,7 +500,6 @@ void detectarDesafio() {
       Serial.println("NENHUM (linha reta)");
       break;
   }
-  
 }
 
 
@@ -535,8 +525,12 @@ void seguirLinha() {
 
   switch (desafioAtual) {
     case VERDE_DIREITA:
-    mover(PARAR, VEL_BASE, 5000);
-    break;
+      mover(PARAR, VEL_BASE, 5000);
+      mover(FRENTE, VEL_BASE, 600);
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 125);
+      mover(PARAR, VEL_BASE, 1000);
+      break;
     case OBSTACULO:
       // -------- OBSTACULO --------
       mover(PARAR, VEL_BASE, 100);
