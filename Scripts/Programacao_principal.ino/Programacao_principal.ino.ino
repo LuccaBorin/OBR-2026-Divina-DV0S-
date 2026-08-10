@@ -246,17 +246,12 @@ void selectChannel(uint8_t channel) {
  *     ainda está se movendo
  * -------------------------------------------------------
  */
-void lerSensores() { /*
+void lerSensores() { 
   isSensorPE = digitalRead(PIN_SENSOR_PE);
   isSensorCE = digitalRead(PIN_SENSOR_CE);
   isSensorCM = digitalRead(PIN_SENSOR_CM);
   isSensorCD = digitalRead(PIN_SENSOR_CD);
-  isSensorPD = digitalRead(PIN_SENSOR_PD);*/
-  isSensorPE = 0;
-  isSensorCE = 0;
-  isSensorCM = 0;
-  isSensorCD = 0;
-  isSensorPD = 0;
+  isSensorPD = digitalRead(PIN_SENSOR_PD);
 
   // -------- SELECT CHANNEL: sensor de distância --------
   selectChannel(I2C_CANAL_DISTANCIA_C);
@@ -294,7 +289,7 @@ void lerSensores() { /*
 
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  
+  /*
   Serial.print("PE: ");
   Serial.print(isSensorPE);
   Serial.print(" | CE: ");
@@ -304,7 +299,7 @@ void lerSensores() { /*
   Serial.print(" | CD: ");
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
-  Serial.print(isSensorPD);/*
+  Serial.print(isSensorPD);
   Serial.print(" | Dist C: ");
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
