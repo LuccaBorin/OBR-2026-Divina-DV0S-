@@ -101,7 +101,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
-  VEL_DEFAULT = 80,
+  VEL_DEFAULT = 83,
   VEL_BASE = 70,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
@@ -246,7 +246,7 @@ void selectChannel(uint8_t channel) {
  *     ainda está se movendo
  * -------------------------------------------------------
  */
-void lerSensores() { 
+void lerSensores() {
   isSensorPE = digitalRead(PIN_SENSOR_PE);
   isSensorCE = digitalRead(PIN_SENSOR_CE);
   isSensorCM = digitalRead(PIN_SENSOR_CM);
@@ -466,7 +466,7 @@ void detectarDesafio() {
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-  
+
   Serial.print("Desafio detectado: ");
   switch (desafioAtual) {
     case VERDE_DIREITA:
@@ -525,6 +525,10 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 1000);
       mover(FRENTE, VEL_BASE, 125);
       mover(PARAR, VEL_BASE, 1000);
+      while (!isSensorCM) {
+        mover(DIREITA, VEL_CURVA, 3);
+      }
+      mover(DIREITA, VEL_CURVA, 150);
       break;
     case OBSTACULO:
       // -------- OBSTACULO --------
@@ -626,7 +630,7 @@ void seguirLinha() {
     case NENHUM:
     default:
       // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-      mover(FRENTE, VEL_DEFAULT, 3);
+      mover(FRENTE, VEL_DEFAULT, 1);
       break;
   }
 }
