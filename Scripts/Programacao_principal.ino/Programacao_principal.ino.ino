@@ -520,15 +520,17 @@ void seguirLinha() {
 
   switch (desafioAtual) {
     case VERDE_DIREITA:
-      mover(PARAR, VEL_BASE, 5000);
-      mover(FRENTE, VEL_BASE, 600);
+      mover(PARAR, VEL_BASE, 3000);
+      mover(FRENTE, VEL_BASE, 500);
       mover(PARAR, VEL_BASE, 1000);
+      mover(DIREITA, VEL_CURVA, 700);
       mover(FRENTE, VEL_BASE, 125);
-      mover(PARAR, VEL_BASE, 1000);
+      mover(PARAR, VEL_BASE, 3000);
       while (!isSensorCM) {
         mover(DIREITA, VEL_CURVA, 3);
       }
-      mover(DIREITA, VEL_CURVA, 150);
+      mover(DIREITA, VEL_CURVA, 200);
+
       break;
     case OBSTACULO:
       // -------- OBSTACULO --------
