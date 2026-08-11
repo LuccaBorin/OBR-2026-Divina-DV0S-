@@ -443,7 +443,7 @@ void detectarDesafio() {
     if (isSensorPE && isSensorPD && isSensorCM) {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       desafioAtual = INTERSECAO_SEM_MARCACAO;
-    } else if (isSensorPE && !isSensorPD) {
+    } else if (isSensorPE && !isSensorPD && isSensorCE) {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
 
