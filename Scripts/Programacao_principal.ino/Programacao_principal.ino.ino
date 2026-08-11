@@ -299,7 +299,7 @@ void lerSensores() {
   Serial.print(" | CD: ");
   Serial.print(isSensorCD);
   Serial.print(" | PD: ");
-  Serial.print(isSensorPD);
+  Serial.println(isSensorPD);
   Serial.print(" | Dist C: ");
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
@@ -447,7 +447,7 @@ void detectarDesafio() {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
 
-    } else if (isSensorPD && !isSensorPE) {
+    } else if (isSensorPD && !isSensorPE && isSensorCD) {
       // -------- CURVA DE 90° PARA A DIREITA --------
       desafioAtual = NOVENTA_GRAUS_DIREITA;
 
@@ -466,7 +466,7 @@ void detectarDesafio() {
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-
+  
   Serial.print("Desafio detectado: ");
   switch (desafioAtual) {
     case VERDE_DIREITA:
