@@ -101,7 +101,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
-  VEL_DEFAULT = 83,
+  VEL_DEFAULT = 78,
   VEL_BASE = 70,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
@@ -433,11 +433,15 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
 void detectarDesafio() {
   if (corEsquerda == VERDE || corDireita == VERDE) {
     if (corEsquerda == VERDE) {
-      // -------- VERDE NA DIREITA --------
-      desafioAtual = VERDE_ESQUERDA;
+      if (corEsquerda == VERDE) {
+        // -------- VERDE NA DIREITA --------
+        desafioAtual = VERDE_ESQUERDA;
+      }
     } else if (corDireita == VERDE) {
-      // -------- VERDE NA DIREITA --------
-      desafioAtual = VERDE_DIREITA;
+      else if (corDireita == VERDE) {
+        // -------- VERDE NA DIREITA --------
+        desafioAtual = VERDE_DIREITA;
+      }
     }
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
@@ -447,7 +451,7 @@ void detectarDesafio() {
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
-      desafioAtual = INTERSECAO_SEM_MARCACAO;A
+      desafioAtual = INTERSECAO_SEM_MARCACAO;
     } else if (isSensorPE && !isSensorPD && isSensorCE) {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
