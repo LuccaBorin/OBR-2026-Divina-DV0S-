@@ -431,9 +431,14 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (corDireita == VERDE) {
-    // -------- VERDE NA DIREITA --------
-    desafioAtual = VERDE_DIREITA;
+  if (corEsquerda == VERDE || corDireita == VERDE) {
+    if (corEsquerda == VERDE) {
+      // -------- VERDE NA DIREITA --------
+      desafioAtual = VERDE_ESQUERDA;
+    } else if (corDireita == VERDE) {
+      // -------- VERDE NA DIREITA --------
+      desafioAtual = VERDE_DIREITA;
+    }
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
       // -------- OBSTACULO --------
@@ -442,7 +447,7 @@ void detectarDesafio() {
   } else if (isSensorPE || isSensorCE || isSensorCM || isSensorCD || isSensorPD) {  // -------- SENSORES VENDO PRETO EM QUALQUER LUGAR --------
     if (isSensorPE && isSensorPD && isSensorCM) {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
-      desafioAtual = INTERSECAO_SEM_MARCACAO;
+      desafioAtual = INTERSECAO_SEM_MARCACAO;A
     } else if (isSensorPE && !isSensorPD && isSensorCE) {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
@@ -466,7 +471,7 @@ void detectarDesafio() {
   }
 
   // -------- DEBUG: mostra no Monitor Serial qual desafio foi detectado --------
-
+  /*
   Serial.print("Desafio detectado: ");
   switch (desafioAtual) {
     case VERDE_DIREITA:
@@ -494,7 +499,7 @@ void detectarDesafio() {
     default:
       Serial.println("NENHUM (linha reta)");
       break;
-  }
+  }*/
 }
 
 
@@ -519,17 +524,32 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
+    case VERDE_ESQUERDA:
+      mover(PARAR, VEL_BASE, 3000);
+      mover(FRENTE, VEL_BASE, 200);  // Checar verde no outro lado
+      mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 125);  // Chegar até o meio
+      mover(ESQUERDA, VEL_CURVA, 800);
+      mover(PARAR, VEL_BASE, 3000);
+      while (!isSensorCM) {
+        mover(ESQUERDA, VEL_CURVA, 3);
+      }
+      mover(ESQUERDA, VEL_CURVA, 300);
+
+      break;
     case VERDE_DIREITA:
       mover(PARAR, VEL_BASE, 3000);
-      mover(FRENTE, VEL_BASE, 500);
+      mover(FRENTE, VEL_BASE, 200);  //Checar verde no outro lado
+      mover(FRENTE, VEL_BASE, 300);  ////Checar verde falso
       mover(PARAR, VEL_BASE, 1000);
-      mover(DIREITA, VEL_CURVA, 700);
-      mover(FRENTE, VEL_BASE, 125);
+      mover(FRENTE, VEL_BASE, 125);  //Chegar até o meio
+      mover(DIREITA, VEL_CURVA, 800);
       mover(PARAR, VEL_BASE, 3000);
       while (!isSensorCM) {
         mover(DIREITA, VEL_CURVA, 3);
       }
-      mover(DIREITA, VEL_CURVA, 200);
+      mover(DIREITA, VEL_CURVA, 300);
 
       break;
     case OBSTACULO:
