@@ -438,7 +438,7 @@ void detectarDesafio() {
         desafioAtual = VERDE_ESQUERDA;
       }
     } else if (corDireita == VERDE) {
-      else if (corDireita == VERDE) {
+       if (corDireita == VERDE) {
         // -------- VERDE NA DIREITA --------
         desafioAtual = VERDE_DIREITA;
       }
