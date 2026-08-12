@@ -432,17 +432,17 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (corEsquerda == VERDE || corDireita == VERDE) {
-    if (corEsquerda == VERDE) {
+    if (corEsquerda == VERDE)  {
       if (corEsquerda == VERDE) {
         // -------- VERDE NA DIREITA --------
         desafioAtual = VERDE_ESQUERDA;
       }
-    } else if (corDireita == VERDE) {
-       if (corDireita == VERDE) {
+    } /*else if (corDireita == VERDE) {
+      if (corDireita == VERDE) {
         // -------- VERDE NA DIREITA --------
         desafioAtual = VERDE_DIREITA;
       }
-    }
+    }*/
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
       // -------- OBSTACULO --------
@@ -529,20 +529,34 @@ void seguirLinha() {
 
   switch (desafioAtual) {
     case VERDE_ESQUERDA:
-      mover(PARAR, VEL_BASE, 3000);
-      mover(FRENTE, VEL_BASE, 200);  // Checar verde no outro lado
-      mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 125);  // Chegar até o meio
-      mover(ESQUERDA, VEL_CURVA, 800);
-      mover(PARAR, VEL_BASE, 3000);
-      while (!isSensorCM) {
-        mover(ESQUERDA, VEL_CURVA, 3);
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 75); // Checar verde no outro lado
+      mover(PARAR, VEL_BASE, 200);
+      lerSensores();
+      lerSensores();
+      if (corEsquerda == VERDE && corDireita == VERDE) {
+        mover(PARAR, VEL_BASE, 1000);
+        mover(ESQUERDA, VEL_CURVA, 800);
+        while (!isSensorCM) {
+          mover(ESQUERDA, VEL_CURVA, 3);
+          mover(ESQUERDA, VEL_CURVA, 200);
+        }
+      } else if (corEsquerda == VERDE && corDireita == SEM_COR) {
+        mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
+       /* if(!isSensorPE && !isSensorPD && !isSensorCD && !isSensorCE)){
+          mover(FRENTE, VEL_BASE, 450); 
+        }*/
+        mover(PARAR, VEL_BASE, 200);
+        mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
+        mover(ESQUERDA, VEL_CURVA, 800);
+        mover(PARAR, VEL_BASE, 200);
+        while (!isSensorCM) {
+          mover(ESQUERDA, VEL_CURVA, 3);
+        }
+        mover(ESQUERDA, VEL_CURVA, 300);
       }
-      mover(ESQUERDA, VEL_CURVA, 300);
-
       break;
-    case VERDE_DIREITA:
+    /*case VERDE_DIREITA:
       mover(PARAR, VEL_BASE, 3000);
       mover(FRENTE, VEL_BASE, 200);  //Checar verde no outro lado
       mover(FRENTE, VEL_BASE, 300);  ////Checar verde falso
@@ -555,7 +569,7 @@ void seguirLinha() {
       }
       mover(DIREITA, VEL_CURVA, 300);
 
-      break;
+      break;*/
     case OBSTACULO:
       // -------- OBSTACULO --------
       mover(PARAR, VEL_BASE, 100);
