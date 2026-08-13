@@ -113,6 +113,7 @@ enum PerfilVelocidade {
 // ======================================================
 enum Desafio {
   FIM_DA_PISTA,
+  BECO_SEM_SAIDA,
   VERDE_DIREITA,
   VERDE_ESQUERDA,
   OBSTACULO,                // Obstaculo
@@ -304,24 +305,12 @@ void lerSensores() {
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
   Serial.print(intDistanciaL);
-  Serial.println(" cm");
-  Serial.print("Cor Esq -> R: ");
-  Serial.print(corEsquerdaR);
-  Serial.print(" G: ");
-  Serial.print(corEsquerdaG);
-  Serial.print(" B: ");
-  Serial.print(corEsquerdaB);
-  Serial.print(" C: ");
-  Serial.print(corEsquerdaC);
-  Serial.print(" | Cor Dir -> R: ");
-  Serial.print(corDireitaR);
-  Serial.print(" G: ");
-  Serial.print(corDireitaG);
-  Serial.print(" B: ");
-  Serial.print(corDireitaB);
-  Serial.print(" C: ");
-  Serial.println(corDireitaC);
-  */
+  Serial.println(" cm");*/
+  Serial.print("Cor Esq : ");
+  Serial.print(corEsquerda);
+    Serial.print("Cor Dir : ");
+  Serial.println(corDireita);
+  
 }
 
 /*
@@ -432,17 +421,23 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (corEsquerda == VERDE || corDireita == VERDE) {
-    if (corEsquerda == VERDE)  {
-      if (corEsquerda == VERDE) {
+    mover(PARAR, VEL_BASE, 200);
+    mover(FRENTE, VEL_BASE, 75);
+    if (corEsquerda == VERDE && corDireita == VERDE) {
+      if (corEsquerda == VERDE && corDireita == VERDE) {
+        desafioAtual = BECO_SEM_SAIDA;
+      }
+    } else if (corEsquerda == VERDE && corDireita == SEM_COR) {
+      if (corEsquerda == VERDE && corDireita == SEM_COR) {
         // -------- VERDE NA DIREITA --------
         desafioAtual = VERDE_ESQUERDA;
       }
-    } /*else if (corDireita == VERDE) {
-      if (corDireita == VERDE) {
+    } else if (corDireita == VERDE && corEsquerda == SEM_COR) {
+      if (corDireita == VERDE && corEsquerda == SEM_COR) {
         // -------- VERDE NA DIREITA --------
         desafioAtual = VERDE_DIREITA;
       }
-    }*/
+    }
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
       // -------- OBSTACULO --------
@@ -528,33 +523,28 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
+    case BECO_SEM_SAIDA:
+      mover(PARAR, VEL_BASE, 1000);
+      mover(ESQUERDA, VEL_CURVA, 800);
+      while (!isSensorCM) {
+        mover(ESQUERDA, VEL_CURVA, 3);
+        mover(ESQUERDA, VEL_CURVA, 200);
+      }
+      break;
     case VERDE_ESQUERDA:
       mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 75); // Checar verde no outro lado
-      mover(PARAR, VEL_BASE, 200);
-      lerSensores();
-      lerSensores();
-      if (corEsquerda == VERDE && corDireita == VERDE) {
-        mover(PARAR, VEL_BASE, 1000);
-        mover(ESQUERDA, VEL_CURVA, 800);
-        while (!isSensorCM) {
-          mover(ESQUERDA, VEL_CURVA, 3);
-          mover(ESQUERDA, VEL_CURVA, 200);
-        }
-      } else if (corEsquerda == VERDE && corDireita == SEM_COR) {
-        mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
-       /* if(!isSensorPE && !isSensorPD && !isSensorCD && !isSensorCE)){
+      mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
+                                     /* if(!isSensorPE && !isSensorPD && !isSensorCD && !isSensorCE)){
           mover(FRENTE, VEL_BASE, 450); 
         }*/
-        mover(PARAR, VEL_BASE, 200);
-        mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
-        mover(ESQUERDA, VEL_CURVA, 800);
-        mover(PARAR, VEL_BASE, 200);
-        while (!isSensorCM) {
-          mover(ESQUERDA, VEL_CURVA, 3);
-        }
-        mover(ESQUERDA, VEL_CURVA, 300);
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
+      mover(ESQUERDA, VEL_CURVA, 800);
+      mover(PARAR, VEL_BASE, 200);
+      while (!isSensorCM) {
+        mover(ESQUERDA, VEL_CURVA, 3);
       }
+      mover(ESQUERDA, VEL_CURVA, 300);
       break;
     /*case VERDE_DIREITA:
       mover(PARAR, VEL_BASE, 3000);
