@@ -113,6 +113,7 @@ enum PerfilVelocidade {
 // ======================================================
 enum Desafio {
   FIM_DA_PISTA,
+  BECO_SEM_SAIDA,
   VERDE_DIREITA,
   VERDE_ESQUERDA,
   OBSTACULO,                // Obstaculo
@@ -432,12 +433,18 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (corEsquerda == VERDE || corDireita == VERDE) {
+    mover(PARAR, VEL_BASE, 200);
+    mover(FRENTE, VEL_BASE, 75);
     if (corEsquerda == VERDE) {
-      // -------- VERDE NA DIREITA --------
-      desafioAtual = VERDE_ESQUERDA;
+      if (corEsquerda == VERDE) {
+        // -------- VERDE NA DIREITA --------
+        desafioAtual = VERDE_ESQUERDA;
+      }
     } else if (corDireita == VERDE) {
-      // -------- VERDE NA DIREITA --------
-      desafioAtual = VERDE_DIREITA;
+      if (corDireita == VERDE) {
+        // -------- VERDE NA DIREITA --------
+        desafioAtual = VERDE_DIREITA;
+      }
     }
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
@@ -528,20 +535,20 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 300);
       if (isSensorCD && isSensorCE) {
         mover(PARAR, VEL_BASE, 3000);
-        mover(FRENTE, VEL_BASE, 400); 
-      }else{
-      mover(FRENTE, VEL_BASE, 400);
-      mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
-      mover(ESQUERDA, VEL_CURVA, 650);
-      mover(FRENTE, VEL_BASE, 250);
-      mover(PARAR, VEL_BASE, 200);
+        mover(FRENTE, VEL_BASE, 400);
+      } else {
+        mover(FRENTE, VEL_BASE, 400);
+        mover(PARAR, VEL_BASE, 200);
+        mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
+        mover(ESQUERDA, VEL_CURVA, 650);
+        mover(FRENTE, VEL_BASE, 250);
+        mover(PARAR, VEL_BASE, 200);
 
-      while (!isSensorCM) {
-        mover(ESQUERDA, VEL_CURVA, 2);
-      }
+        while (!isSensorCM) {
+          mover(ESQUERDA, VEL_CURVA, 2);
+        }
 
-      mover(ESQUERDA, VEL_CURVA, 250);
+        mover(ESQUERDA, VEL_CURVA, 250);
       }
       break;
 
@@ -550,7 +557,7 @@ void seguirLinha() {
       mover(PARAR, VEL_BASE, 300);
       if (isSensorCD && isSensorCE) {
         mover(PARAR, VEL_BASE, 3000);
-        mover(FRENTE, VEL_BASE, 400); 
+        mover(FRENTE, VEL_BASE, 400);
       } else {
         mover(FRENTE, VEL_BASE, 400);
         mover(PARAR, VEL_BASE, 200);
