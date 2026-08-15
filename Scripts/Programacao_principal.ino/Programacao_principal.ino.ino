@@ -532,8 +532,9 @@ void seguirLinha() {
       break;
     case VERDE_ESQUERDA:
       mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
-      if (!isSensorPE && !isSensorPD && !isSensorCD && !isSensorCE)){
+      mover(FRENTE, VEL_BASE, 75);  // Checar verde falso
+      mover(PARAR, VEL_BASE, 200);
+      if (isSensorPE && isSensorPD)){
           mover(FRENTE, VEL_BASE, 450);
         }
       else {
@@ -549,17 +550,17 @@ void seguirLinha() {
 
       break;
     case VERDE_DIREITA:
-      mover(PARAR, VEL_BASE, 3000);
-      mover(FRENTE, VEL_BASE, 200);  //Checar verde no outro lado
-      mover(FRENTE, VEL_BASE, 300);  ////Checar verde falso
-      if (!isSensorPE && !isSensorPD && !isSensorCD && !isSensorCE)){
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 75);  // Checar verde falso
+      mover(PARAR, VEL_BASE, 200);
+      if (isSensorPE && isSensorPD)){
           mover(FRENTE, VEL_BASE, 450);
         }
       else {
-        mover(PARAR, VEL_BASE, 1000);
-        mover(FRENTE, VEL_BASE, 125);  //Chegar até o meio
+        mover(PARAR, VEL_BASE, 200);
+        mover(FRENTE, VEL_BASE, 150);  //Chegar até o meio
         mover(DIREITA, VEL_CURVA, 800);
-        mover(PARAR, VEL_BASE, 3000);
+        mover(PARAR, VEL_BASE, 200);
         while (!isSensorCM) {
           mover(DIREITA, VEL_CURVA, 3);
         }
