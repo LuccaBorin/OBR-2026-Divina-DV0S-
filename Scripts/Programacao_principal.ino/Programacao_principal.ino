@@ -267,7 +267,7 @@ void lerSensores() {
   // G precisa ser significativamente maior que R e B.
   // A comparação usa inteiros para evitar float e não adiciona delay.
   if (
-    corEsquerdaC >= 20 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 112 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 112 && (uint32_t)corEsquerdaG * 100 >= ((uint32_t)corEsquerdaR + (uint32_t)corEsquerdaG + (uint32_t)corEsquerdaB) * 40) {
+    corEsquerdaC >= 13 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 112 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 112 && (uint32_t)corEsquerdaG * 100 >= ((uint32_t)corEsquerdaR + (uint32_t)corEsquerdaG + (uint32_t)corEsquerdaB) * 40) {
     corEsquerda = VERDE;
   } else {
     corEsquerda = SEM_COR;
@@ -280,7 +280,7 @@ void lerSensores() {
   // G precisa ser significativamente maior que R e B.
   // A comparação usa inteiros para evitar float e não adiciona delay.
   if (
-    corDireitaC >= 20 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 112 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 112 && (uint32_t)corDireitaG * 100 >= ((uint32_t)corDireitaR + (uint32_t)corDireitaG + (uint32_t)corDireitaB) * 40) {
+    corDireitaC >= 13 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 112 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 112 && (uint32_t)corDireitaG * 100 >= ((uint32_t)corDireitaR + (uint32_t)corDireitaG + (uint32_t)corDireitaB) * 40) {
     corDireita = VERDE;
   } else {
     corDireita = SEM_COR;
@@ -525,32 +525,46 @@ void seguirLinha() {
 
   switch (desafioAtual) {
     case VERDE_ESQUERDA:
-      mover(PARAR, VEL_BASE, 3000);
-      mover(FRENTE, VEL_BASE, 200);  // Checar verde no outro lado
-      mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 175);  // Chegar até o meio
-      mover(ESQUERDA, VEL_CURVA, 800);
-      mover(PARAR, VEL_BASE, 3000);
-      while (!isSensorCM) {
-        mover(ESQUERDA, VEL_CURVA, 3);
-      }
-      mover(ESQUERDA, VEL_CURVA, 300);
+      mover(PARAR, VEL_BASE, 300);
+      if (isSensorCD && isSensorCE) {
+        mover(PARAR, VEL_BASE, 3000);
+        mover(FRENTE, VEL_BASE, 400); 
+      }else{
+      mover(FRENTE, VEL_BASE, 400);
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
+      mover(ESQUERDA, VEL_CURVA, 650);
+      mover(FRENTE, VEL_BASE, 250);
+      mover(PARAR, VEL_BASE, 200);
 
+      while (!isSensorCM) {
+        mover(ESQUERDA, VEL_CURVA, 2);
+      }
+
+      mover(ESQUERDA, VEL_CURVA, 250);
+      }
       break;
-    case VERDE_DIREITA:
-      mover(PARAR, VEL_BASE, 3000);
-      mover(FRENTE, VEL_BASE, 200);  //Checar verde no outro lado
-      mover(FRENTE, VEL_BASE, 300);  ////Checar verde falso
-      mover(PARAR, VEL_BASE, 1000);
-      mover(FRENTE, VEL_BASE, 175);  //Chegar até o meio
-      mover(DIREITA, VEL_CURVA, 800);
-      mover(PARAR, VEL_BASE, 3000);
-      while (!isSensorCM) {
-        mover(DIREITA, VEL_CURVA, 3);
-      }
-      mover(DIREITA, VEL_CURVA, 300);
 
+
+    case VERDE_DIREITA:
+      mover(PARAR, VEL_BASE, 300);
+      if (isSensorCD && isSensorCE) {
+        mover(PARAR, VEL_BASE, 3000);
+        mover(FRENTE, VEL_BASE, 400); 
+      } else {
+        mover(FRENTE, VEL_BASE, 400);
+        mover(PARAR, VEL_BASE, 200);
+        mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
+        mover(DIREITA, VEL_CURVA, 650);
+        mover(FRENTE, VEL_BASE, 250);
+        mover(PARAR, VEL_BASE, 200);
+
+        while (!isSensorCM) {
+          mover(DIREITA, VEL_CURVA, 2);
+        }
+
+        mover(DIREITA, VEL_CURVA, 250);
+      }
       break;
     case OBSTACULO:
       // -------- OBSTACULO --------
