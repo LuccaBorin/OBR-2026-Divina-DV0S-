@@ -435,7 +435,12 @@ void detectarDesafio() {
   if (corEsquerda == VERDE || corDireita == VERDE) {
     mover(PARAR, VEL_BASE, 200);
     mover(FRENTE, VEL_BASE, 75);
-    if (corEsquerda == VERDE) {
+    if (corEsquerda == VERDE && corDireita == VERDE) {
+      if (corEsquerda == VERDE && corDireita == VERDE) {
+        // -------- BECO SEM SAIDA --------
+        desafioAtual = BECO_SEM_SAIDA;
+      }
+    } else if (corEsquerda == VERDE) {
       if (corEsquerda == VERDE) {
         // -------- VERDE NA DIREITA --------
         desafioAtual = VERDE_ESQUERDA;
@@ -531,9 +536,16 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
+    case BECO_SEM_SAIDA:
+      mover(PARAR, VEL_BASE, 3000);
+      mover(ESQUERDA, VEL_CURVA, 800);
+      while (!isSensorCM) {
+        mover(ESQUERDA, VEL_CURVA, 2);
+      }
+      break;
     case VERDE_ESQUERDA:
       mover(PARAR, VEL_BASE, 300);
-      if (isSensorCD && isSensorCE) {
+      if ((isSensorCD && isSensorCE) || (isSensorCD)) {
         mover(PARAR, VEL_BASE, 3000);
         mover(FRENTE, VEL_BASE, 400);
       } else {
@@ -555,7 +567,7 @@ void seguirLinha() {
 
     case VERDE_DIREITA:
       mover(PARAR, VEL_BASE, 300);
-      if (isSensorCD && isSensorCE) {
+      if ((isSensorCD && isSensorCE) || (isSensorCE)) {
         mover(PARAR, VEL_BASE, 3000);
         mover(FRENTE, VEL_BASE, 400);
       } else {
