@@ -101,7 +101,7 @@ enum Direcao {
 // Abaixo de ~30 o motor pode não vencer o atrito estático.
 // ======================================================
 enum PerfilVelocidade {
-  VEL_DEFAULT = 78,
+  VEL_DEFAULT = 83,
   VEL_BASE = 70,    // Velocidade padrão em linha reta
   VEL_CURVA = 75,   // Ajustada para manter a linha na curva
   VEL_SUBIDA = 75,  // Aumentada para vencer a gravidade
@@ -113,7 +113,6 @@ enum PerfilVelocidade {
 // ======================================================
 enum Desafio {
   FIM_DA_PISTA,
-  BECO_SEM_SAIDA,
   VERDE_DIREITA,
   VERDE_ESQUERDA,
   OBSTACULO,                // Obstaculo
@@ -305,11 +304,24 @@ void lerSensores() {
   Serial.print(intDistanciaC);
   Serial.print(" cm | Dist L: ");
   Serial.print(intDistanciaL);
-  Serial.println(" cm");*/
-  Serial.print("Cor Esq : ");
-  Serial.print(corEsquerda);
-  Serial.print("Cor Dir : ");
-  Serial.println(corDireita);
+  Serial.println(" cm");
+  Serial.print("Cor Esq -> R: ");
+  Serial.print(corEsquerdaR);
+  Serial.print(" G: ");
+  Serial.print(corEsquerdaG);
+  Serial.print(" B: ");
+  Serial.print(corEsquerdaB);
+  Serial.print(" C: ");
+  Serial.print(corEsquerdaC);
+  Serial.print(" | Cor Dir -> R: ");
+  Serial.print(corDireitaR);
+  Serial.print(" G: ");
+  Serial.print(corDireitaG);
+  Serial.print(" B: ");
+  Serial.print(corDireitaB);
+  Serial.print(" C: ");
+  Serial.println(corDireitaC);
+  */
 }
 
 /*
@@ -420,22 +432,12 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (corEsquerda == VERDE || corDireita == VERDE) {
-    mover(PARAR, VEL_BASE, 200);
-    mover(FRENTE, VEL_BASE, 75);
-    if (corEsquerda == VERDE && corDireita == VERDE) {
-      if (corEsquerda == VERDE && corDireita == VERDE) {
-        desafioAtual = BECO_SEM_SAIDA;
-      }
-    } else if (corEsquerda == VERDE && corDireita == SEM_COR) {
-      if (corEsquerda == VERDE && corDireita == SEM_COR) {
-        // -------- VERDE NA DIREITA --------
-        desafioAtual = VERDE_ESQUERDA;
-      }
-    } else if (corDireita == VERDE && corEsquerda == SEM_COR) {
-      if (corDireita == VERDE && corEsquerda == SEM_COR) {
-        // -------- VERDE NA DIREITA --------
-        desafioAtual = VERDE_DIREITA;
-      }
+    if (corEsquerda == VERDE) {
+      // -------- VERDE NA DIREITA --------
+      desafioAtual = VERDE_ESQUERDA;
+    } else if (corDireita == VERDE) {
+      // -------- VERDE NA DIREITA --------
+      desafioAtual = VERDE_DIREITA;
     }
   } else if (intDistanciaC <= 10) {
     if (intDistanciaC <= 10) {
@@ -522,152 +524,135 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
-    case BECO_SEM_SAIDA:
+    case VERDE_ESQUERDA:
+      mover(PARAR, VEL_BASE, 3000);
+      mover(FRENTE, VEL_BASE, 200);  // Checar verde no outro lado
+      mover(FRENTE, VEL_BASE, 300);  // Checar verde falso
       mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 175);  // Chegar até o meio
       mover(ESQUERDA, VEL_CURVA, 800);
+      mover(PARAR, VEL_BASE, 3000);
       while (!isSensorCM) {
         mover(ESQUERDA, VEL_CURVA, 3);
-        mover(ESQUERDA, VEL_CURVA, 200);
       }
-      break;
-    case VERDE_ESQUERDA:
-      mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 75);  // Checar verde falso
-      mover(PARAR, VEL_BASE, 200);
-      if (isSensorPE && isSensorPD)){
-          mover(FRENTE, VEL_BASE, 450);
-        }
-      else {
-        mover(PARAR, VEL_BASE, 200);
-        mover(FRENTE, VEL_BASE, 150);  // Chegar até o meio
-        mover(ESQUERDA, VEL_CURVA, 800);
-        mover(PARAR, VEL_BASE, 200);
-        while (!isSensorCM) {
-          mover(ESQUERDA, VEL_CURVA, 3);
-        }
-        mover(ESQUERDA, VEL_CURVA, 300);
-      }
+      mover(ESQUERDA, VEL_CURVA, 300);
 
       break;
     case VERDE_DIREITA:
-      mover(PARAR, VEL_BASE, 200);
-      mover(FRENTE, VEL_BASE, 75);  // Checar verde falso
-      mover(PARAR, VEL_BASE, 200);
-      if (isSensorPE && isSensorPD)){
-          mover(FRENTE, VEL_BASE, 450);
+      mover(PARAR, VEL_BASE, 3000);
+      mover(FRENTE, VEL_BASE, 200);  //Checar verde no outro lado
+      mover(FRENTE, VEL_BASE, 300);  ////Checar verde falso
+      mover(PARAR, VEL_BASE, 1000);
+      mover(FRENTE, VEL_BASE, 175);  //Chegar até o meio
+      mover(DIREITA, VEL_CURVA, 800);
+      mover(PARAR, VEL_BASE, 3000);
+      while (!isSensorCM) {
+        mover(DIREITA, VEL_CURVA, 3);
+      }
+      mover(DIREITA, VEL_CURVA, 300);
+
+      break;
+    case OBSTACULO:
+      // -------- OBSTACULO --------
+      mover(PARAR, VEL_BASE, 100);
+      mover(TRAS, VEL_DEFAULT, 150);
+      mover(DIREITA, VEL_CURVA, 200);
+      while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {  //adicionar redundancia ao while, ou filtro a leitura
+        lerSensores();
+        mover(DIREITA, VEL_CURVA, 3);
+      }
+      mover(DIREITA, VEL_CURVA, 250);
+      mover(PARAR, VEL_BASE, 100);
+      mover(FRENTE, VEL_BASE, 2875);
+      mover(ESQUERDA, VEL_CURVA, 300);
+      mover(PARAR, VEL_BASE, 100);
+      while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
+        lerSensores();
+        mover(ESQUERDA, VEL_CURVA, 3);
+      }
+      mover(PARAR, VEL_BASE, 100);
+      mover(ESQUERDA, VEL_CURVA, 475);
+      mover(PARAR, VEL_BASE, 100);
+      mover(FRENTE, VEL_BASE, 3250);
+      mover(ESQUERDA, VEL_CURVA, 200);
+      mover(PARAR, VEL_BASE, 100);
+      while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
+        lerSensores();
+        mover(ESQUERDA, VEL_CURVA, 3);
+      }
+      mover(PARAR, VEL_BASE, 100);
+      mover(ESQUERDA, VEL_CURVA, 1425);
+      mover(FRENTE, VEL_BASE, 2000);
+      while (!isSensorCM) {
+        lerSensores();
+        mover(FRENTE, VEL_DEFAULT, 3);
+      }
+      mover(DIREITA, VEL_CURVA, 200);
+      mover(PARAR, VEL_BASE, 100);
+      break;
+
+    case INTERSECAO_SEM_MARCACAO:
+      // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
+      mover(PARAR, VEL_BASE, 100);
+      mover(FRENTE, VEL_BASE, 425);
+      break;
+
+    case NOVENTA_GRAUS_ESQUERDA:
+      // -------- CURVA DE 90° PARA A ESQUERDA --------
+      mover(FRENTE, VEL_BASE, 300);
+
+      if (isSensorCM && isSensorPE && isSensorCE) {
+        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
+        mover(FRENTE, VEL_BASE, 125);
+      } else {
+        // -------- CURVA 90° "PURA" --------
+        mover(FRENTE, VEL_BASE, 50);
+
+        while (!isSensorCM) {
+          mover(ESQUERDA, VEL_CURVA, 3);
         }
-      else {
-        mover(PARAR, VEL_BASE, 200);
-        mover(FRENTE, VEL_BASE, 150);  //Chegar até o meio
-        mover(DIREITA, VEL_CURVA, 800);
-        mover(PARAR, VEL_BASE, 200);
+
+        mover(ESQUERDA, VEL_CURVA, 150);
+      }
+
+      break;
+
+    case NOVENTA_GRAUS_DIREITA:
+      // -------- CURVA DE 90° PARA A DIREITA --------
+      mover(FRENTE, VEL_BASE, 300);
+
+      if (isSensorCM && isSensorPD && isSensorCD) {
+        // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
+        mover(FRENTE, VEL_BASE, 125);
+      } else {
+        // -------- CURVA 90° "PURA" --------
+        mover(FRENTE, VEL_BASE, 50);
+
         while (!isSensorCM) {
           mover(DIREITA, VEL_CURVA, 3);
         }
-        mover(DIREITA, VEL_CURVA, 300);
 
-        break;
-        case OBSTACULO:
-          // -------- OBSTACULO --------
-          mover(PARAR, VEL_BASE, 100);
-          mover(TRAS, VEL_DEFAULT, 150);
-          mover(DIREITA, VEL_CURVA, 200);
-          while (!(intDistanciaL >= 15 && intDistanciaL <= 20)) {  //adicionar redundancia ao while, ou filtro a leitura
-            lerSensores();
-            mover(DIREITA, VEL_CURVA, 3);
-          }
-          mover(DIREITA, VEL_CURVA, 250);
-          mover(PARAR, VEL_BASE, 100);
-          mover(FRENTE, VEL_BASE, 2875);
-          mover(ESQUERDA, VEL_CURVA, 300);
-          mover(PARAR, VEL_BASE, 100);
-          while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
-            lerSensores();
-            mover(ESQUERDA, VEL_CURVA, 3);
-          }
-          mover(PARAR, VEL_BASE, 100);
-          mover(ESQUERDA, VEL_CURVA, 475);
-          mover(PARAR, VEL_BASE, 100);
-          mover(FRENTE, VEL_BASE, 3250);
-          mover(ESQUERDA, VEL_CURVA, 200);
-          mover(PARAR, VEL_BASE, 100);
-          while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
-            lerSensores();
-            mover(ESQUERDA, VEL_CURVA, 3);
-          }
-          mover(PARAR, VEL_BASE, 100);
-          mover(ESQUERDA, VEL_CURVA, 1425);
-          mover(FRENTE, VEL_BASE, 2000);
-          while (!isSensorCM) {
-            lerSensores();
-            mover(FRENTE, VEL_DEFAULT, 3);
-          }
-          mover(DIREITA, VEL_CURVA, 200);
-          mover(PARAR, VEL_BASE, 100);
-          break;
-
-        case INTERSECAO_SEM_MARCACAO:
-          // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
-          mover(PARAR, VEL_BASE, 100);
-          mover(FRENTE, VEL_BASE, 425);
-          break;
-
-        case NOVENTA_GRAUS_ESQUERDA:
-          // -------- CURVA DE 90° PARA A ESQUERDA --------
-          mover(FRENTE, VEL_BASE, 300);
-
-          if (isSensorCM && isSensorPE && isSensorCE) {
-            // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
-            mover(FRENTE, VEL_BASE, 125);
-          } else {
-            // -------- CURVA 90° "PURA" --------
-            mover(FRENTE, VEL_BASE, 50);
-
-            while (!isSensorCM) {
-              mover(ESQUERDA, VEL_CURVA, 3);
-            }
-
-            mover(ESQUERDA, VEL_CURVA, 150);
-          }
-
-          break;
-
-        case NOVENTA_GRAUS_DIREITA:
-          // -------- CURVA DE 90° PARA A DIREITA --------
-          mover(FRENTE, VEL_BASE, 300);
-
-          if (isSensorCM && isSensorPD && isSensorCD) {
-            // -------- INTERSEÇÃO (uma ou duas linhas sem cor) --------
-            mover(FRENTE, VEL_BASE, 125);
-          } else {
-            // -------- CURVA 90° "PURA" --------
-            mover(FRENTE, VEL_BASE, 50);
-
-            while (!isSensorCM) {
-              mover(DIREITA, VEL_CURVA, 3);
-            }
-
-            mover(DIREITA, VEL_CURVA, 150);
-          }
-
-          break;
-
-        case CURVA_LEVE_ESQUERDA:
-          // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
-          mover(ESQUERDA, VEL_CURVA, 125);
-          mover(FRENTE, VEL_BASE, 50);
-          break;
-
-        case CURVA_LEVE_DIREITA:
-          // -------- CORREÇÃO SUAVE PARA A DIREITA --------
-          mover(DIREITA, VEL_CURVA, 125);
-          mover(FRENTE, VEL_BASE, 50);
-          break;
-
-        case NENHUM:
-        default:
-          // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
-          mover(FRENTE, VEL_DEFAULT, 1);
-          break;
+        mover(DIREITA, VEL_CURVA, 150);
       }
+
+      break;
+
+    case CURVA_LEVE_ESQUERDA:
+      // -------- CORREÇÃO SUAVE PARA A ESQUERDA --------
+      mover(ESQUERDA, VEL_CURVA, 125);
+      mover(FRENTE, VEL_BASE, 50);
+      break;
+
+    case CURVA_LEVE_DIREITA:
+      // -------- CORREÇÃO SUAVE PARA A DIREITA --------
+      mover(DIREITA, VEL_CURVA, 125);
+      mover(FRENTE, VEL_BASE, 50);
+      break;
+
+    case NENHUM:
+    default:
+      // -------- LINHA RETA / NENHUM SENSOR ATIVO --------
+      mover(FRENTE, VEL_DEFAULT, 1);
+      break;
   }
+}
