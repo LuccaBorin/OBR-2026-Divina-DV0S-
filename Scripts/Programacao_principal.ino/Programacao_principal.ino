@@ -113,6 +113,7 @@ enum PerfilVelocidade {
 // ======================================================
 enum Desafio {
   FIM_DA_PISTA,
+  SALA_DE_RESGATE,
   BECO_SEM_SAIDA,
   VERDE_DIREITA,
   VERDE_ESQUERDA,
@@ -439,7 +440,16 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  */
 void detectarDesafio() {
   if (corEsquerda == VERMELHO || corDireita == VERMELHO) {
-    mover(PARAR,VEL_BASE,7000);
+    if (corEsquerda == VERMELHO || corDireita == VERMELHO) {
+      // -------- FIM DA PISTA --------
+      desafioAtual = FIM_DA_PISTA;
+    }
+  } else if ((intDistanciaL >= 9 && intDistanciaL <= 13) && (!isSensorCE && !isSensorCD && !isSensorPE && !isSensorPD && !isSensorCM)) {
+    mover(FRENTE, VEL_BASE, 115);
+    if ((intDistanciaL >= 8 && intDistanciaL <= 15) && (!isSensorCE && !isSensorCD && !isSensorPE && !isSensorPD && !isSensorCM)) {
+      // -------- SALA DE RESGATE --------
+      desafioAtual = SALA_DE_RESGATE;
+    }
   } else if (corEsquerda == VERDE || corDireita == VERDE) {
     if (corEsquerda == VERDE || corDireita == VERDE) {
       mover(PARAR, VEL_BASE, 200);
@@ -546,6 +556,35 @@ void detectarDesafio() {
 void seguirLinha() {
 
   switch (desafioAtual) {
+    case SALA_DE_RESGATE:
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 200);
+      while (!(intDistanciaC >= 10 && intDistanciaC <= 15)) {
+        mover(FRENTE, VEL_DEFAULT, 1);
+      }
+      mover(PARAR, VEL_BASE, 200);
+      while (!(intDistanciaL >= 10 && intDistanciaL <= 15)) {
+        mover(DIREITA, VEL_CURVA, 1);
+      }
+      mover(TRAS, VEL_BASE, 350);
+      mover(DIREITA, VEL_CURVA, 550);
+      while (!(intDistanciaC == 819 && intDistanciaL >= 10 && intDistanciaL <= 15)) {
+        mover(DIREITA, VEL_CURVA, 1);
+      }
+      mover(DIREITA, VEL_CURVA, 450);
+      mover(PARAR, VEL_BASE, 200);
+      while (!(intDistanciaL >= 40)) {
+        mover(FRENTE, VEL_DEFAULT, 1);
+      }
+      mover(FRENTE, VEL_BASE, 750);
+      mover(ESQUERDA, VEL_CURVA, 1700);
+      mover(FRENTE, VEL_BASE,850);
+      mover(PARAR, VEL_BASE, 2000);
+
+      break;
+    case FIM_DA_PISTA:
+      mover(PARAR, VEL_BASE, 7000);
+      break;
     case BECO_SEM_SAIDA:
       mover(PARAR, VEL_BASE, 3000);
       mover(ESQUERDA, VEL_CURVA, 800);
