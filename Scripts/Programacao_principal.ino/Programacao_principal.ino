@@ -268,7 +268,10 @@ void lerSensores() {
   // G precisa ser significativamente maior que R e B.
   // A comparação usa inteiros para evitar float e não adiciona delay.
   if (
-    corEsquerdaC >= 13 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 112 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 112 && (uint32_t)corEsquerdaG * 100 >= ((uint32_t)corEsquerdaR + (uint32_t)corEsquerdaG + (uint32_t)corEsquerdaB) * 40) {
+    corEsquerdaC >= 13 && (uint32_t)corEsquerdaR * 100 > (uint32_t)corEsquerdaG * 120 && (uint32_t)corEsquerdaR * 100 > (uint32_t)corEsquerdaB * 120 && (uint32_t)corEsquerdaR * 100 >= ((uint32_t)corEsquerdaR + (uint32_t)corEsquerdaG + (uint32_t)corEsquerdaB) * 35) {
+    corEsquerda = VERMELHO;
+  } else if (
+    corEsquerdaC >= 13 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaR * 111 && (uint32_t)corEsquerdaG * 100 > (uint32_t)corEsquerdaB * 110 && (uint32_t)corEsquerdaG * 100 >= ((uint32_t)corEsquerdaR + (uint32_t)corEsquerdaG + (uint32_t)corEsquerdaB) * 33) {
     corEsquerda = VERDE;
   } else {
     corEsquerda = SEM_COR;
@@ -281,7 +284,10 @@ void lerSensores() {
   // G precisa ser significativamente maior que R e B.
   // A comparação usa inteiros para evitar float e não adiciona delay.
   if (
-    corDireitaC >= 13 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 112 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 112 && (uint32_t)corDireitaG * 100 >= ((uint32_t)corDireitaR + (uint32_t)corDireitaG + (uint32_t)corDireitaB) * 40) {
+    corDireitaC >= 13 && (uint32_t)corDireitaR * 100 > (uint32_t)corDireitaG * 120 && (uint32_t)corDireitaR * 100 > (uint32_t)corDireitaB * 120 && (uint32_t)corDireitaR * 100 >= ((uint32_t)corDireitaR + (uint32_t)corDireitaG + (uint32_t)corDireitaB) * 35) {
+    corDireita = VERMELHO;
+  } else if (
+    corDireitaC >= 13 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaR * 111 && (uint32_t)corDireitaG * 100 > (uint32_t)corDireitaB * 110 && (uint32_t)corDireitaG * 100 >= ((uint32_t)corDireitaR + (uint32_t)corDireitaG + (uint32_t)corDireitaB) * 33) {
     corDireita = VERDE;
   } else {
     corDireita = SEM_COR;
@@ -432,23 +438,27 @@ void mover(Direcao direcao, PerfilVelocidade velocidade, int tempo) {
  * -------------------------------------------------------
  */
 void detectarDesafio() {
-  if (corEsquerda == VERDE || corDireita == VERDE) {
-    mover(PARAR, VEL_BASE, 200);
-    mover(FRENTE, VEL_BASE, 75);
-    if (corEsquerda == VERDE && corDireita == VERDE) {
+  if (corEsquerda == VERMELHO || corDireita == VERMELHO) {
+    mover(PARAR,VEL_BASE,7000);
+  } else if (corEsquerda == VERDE || corDireita == VERDE) {
+    if (corEsquerda == VERDE || corDireita == VERDE) {
+      mover(PARAR, VEL_BASE, 200);
+      mover(FRENTE, VEL_BASE, 95);
       if (corEsquerda == VERDE && corDireita == VERDE) {
-        // -------- BECO SEM SAIDA --------
-        desafioAtual = BECO_SEM_SAIDA;
-      }
-    } else if (corEsquerda == VERDE) {
-      if (corEsquerda == VERDE) {
-        // -------- VERDE NA DIREITA --------
-        desafioAtual = VERDE_ESQUERDA;
-      }
-    } else if (corDireita == VERDE) {
-      if (corDireita == VERDE) {
-        // -------- VERDE NA DIREITA --------
-        desafioAtual = VERDE_DIREITA;
+        if (corEsquerda == VERDE && corDireita == VERDE) {
+          // -------- BECO SEM SAIDA --------
+          desafioAtual = BECO_SEM_SAIDA;
+        }
+      } else if (corEsquerda == VERDE) {
+        if (corEsquerda == VERDE) {
+          // -------- VERDE NA DIREITA --------
+          desafioAtual = VERDE_ESQUERDA;
+        }
+      } else if (corDireita == VERDE) {
+        if (corDireita == VERDE) {
+          // -------- VERDE NA DIREITA --------
+          desafioAtual = VERDE_DIREITA;
+        }
       }
     }
   } else if (intDistanciaC <= 10) {
@@ -460,11 +470,11 @@ void detectarDesafio() {
     if (isSensorPE && isSensorPD && isSensorCM) {
       // -------- INTERSEÇÃO DUAS LINHAS SEM COR --------
       desafioAtual = INTERSECAO_SEM_MARCACAO;
-    } else if (isSensorPE && !isSensorPD && isSensorCE) {
+    } else if (isSensorPE && !isSensorPD) {
       // -------- CURVA DE 90° PARA A ESQUERDA --------
       desafioAtual = NOVENTA_GRAUS_ESQUERDA;
 
-    } else if (isSensorPD && !isSensorPE && isSensorCD) {
+    } else if (isSensorPD && !isSensorPE) {
       // -------- CURVA DE 90° PARA A DIREITA --------
       desafioAtual = NOVENTA_GRAUS_DIREITA;
 
